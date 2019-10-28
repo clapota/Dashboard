@@ -1,0 +1,19 @@
+{
+  "name": "dashboard_epitech",
+  "version": "1.0.0",
+  "description": "Epitech dashboard project",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.epitech.eu:/abel.vinuela-hamoudi@epitech.eu/DEV_dashboard_2019"
+  },
+  "author": "Vinuela-Hamoudi Abel / Dhollande Antoine",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
