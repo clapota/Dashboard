@@ -2,52 +2,111 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './LoginView.css';
+import { instanceOf } from 'prop-types';
+import { GoogleLogin } from 'react-google-login';
+import { withCookies, Cookies } from 'react-cookie';
+import Button from '@material-ui/core/Button';
+import { Container, CssBaseline, Avatar, TextField, Typography} from '@material-ui/core';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 class LoginView extends React.Component {
+    static propTypes = {
+        cookies: instanceOf(Cookies).isRequired
+    };
+
     constructor(props) {
         super(props);
-        this.googleApi = this.googleApi.bind(this);
+        this.googleOnSuccess = this.googleOnSuccess.bind(this);
+        this.googleOnFailure = this.googleOnFailure.bind(this);
     }
 
     googleApi(e) {
         e.preventDefault();
+        console.log('test');
         return 0;
+    }
+
+    googleOnSuccess(response) {
+        const { cookies } = this.props;
+        let expirationDate = new Date('now');
+
+        expirationDate = new Date(expirationDate.setMonth(expirationDate.getMonth()+1));
+        cookies.set('google-credentials', response.toString(), {path: '/', expires: expirationDate});
+        console.log(response);
+        console.log('Google ID : ' + response.googleId);
+        console.log('Token ID : ' + response.tokenId);
+        console.log('Access token ' + response.accessToken);
+        console.log('Token OBJ :' + response.tokenObj);
+        console.log('Profile OBJ :' + response.profileObj);
+        this.props.handler();
+        console.log('COOKIE ' + cookies.get('google-credentials'));
+    }
+
+    googleOnFailure(response) {
+        console.log(response.error);
     }
 
     render() {
         return (
-            <div className="signin-bg-image">
-                <div className="container-fluid">
-                    <div className="col-sm-9 col-md-7 col-lg-4 mx-auto">
-                        <div className="card card-signin shadow rounded">
-                            <div class="card-body">
-                                <h5 class="card-title text-center">Sign In</h5>
-                                <form class="form-signin">
-                                <div class="form-label-group">
-                                    <label for="inputEmail">Email address</label>
-                                    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus />
-                                </div>
-
-                                <div class="form-label-group">
-                                    <label for="inputPassword">Password</label>
-                                    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required/>
-                                </div>
-
-                                <div class="custom-control custom-checkbox mb-3">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck1"/>
-                                    <label class="custom-control-label" for="customCheck1">Remember password</label>
-                                </div>
-                                <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
-                                <hr class="my-4"/>
-                                <button class="btn btn-lg btn-google btn-block text-uppercase" onClick={this.googleApi}><FontAwesomeIcon color="white" icon={['fab', 'google']}/> Sign in with Google</button>
-                                </form>
-                            </div>
-                        </div>
+                <Container className="login-form"component="main" maxWidth="xs">
+                    <CssBaseline />
+                    <div className="paper">
+                        <Avatar className="avatar">
+                            <LockOutlinedIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h5">
+                            Sign in
+                        </Typography>
+                        <form className="form" noValidate>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            autoFocus
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className="submit"
+                        >
+                            Sign In
+                        </Button>
+                        </form>
+                        <GoogleLogin
+                                    buttonText="Login With google"
+                                    clientId="510533827407-r7e4usbqtgurv1p47vmb3n9a8f8nnm7j.apps.googleusercontent.com"
+                                    render={
+                                        renderProps => (
+                                            <Button variant="contained" color="secondary" className="google-submit" onClick={renderProps.onClick} disabled={renderProps.disabled}><FontAwesomeIcon className="icon-google" color="white" icon={['fab', 'google']}/>Sign in with google</Button>
+                                        )
+                                    }
+                                    redirectUri="localhost:8080"
+                                    onSuccess={this.googleOnSuccess}
+                                    onFailure={this.googleOnFailure}
+                                    cookiePolicy={'single_host_origin'}
+                        />
                     </div>
-                </div>
-            </div>
-        )
+                </Container>
+        );
     }
 }
 
-export default LoginView;
+export default withCookies(LoginView);

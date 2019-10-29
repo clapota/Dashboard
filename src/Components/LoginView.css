@@ -1,18 +1,29 @@
-.signin-bg-image {
-    background-color: #FEE140;
-    background-image: linear-gradient(90deg, #FEE140 0%, #FA709A 100%);
-    position: absolute;
+body {
+    background-color: white;
+    overflow: hidden;
+}
+
+.paper {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.avatar {
+    margin: 1px;
+    background-color: whitesmoke;
+}
+
+.form {
     width: 100%;
-    left: 0;
-    height: 100%;
+    margin-top: 1px;
 }
 
-.card-signin {
-    margin-top: 20%;
+.submit {
+    margin: 3px;
 }
 
-.btn-google {
-    background-color: #db3236;
-    border-radius: 20px;
-    color: white;
+.google-submit {
+    margin-top: 15px !important;
 }
