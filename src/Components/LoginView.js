@@ -20,26 +20,13 @@ class LoginView extends React.Component {
         this.googleOnFailure = this.googleOnFailure.bind(this);
     }
 
-    googleApi(e) {
-        e.preventDefault();
-        console.log('test');
-        return 0;
-    }
-
     googleOnSuccess(response) {
         const { cookies } = this.props;
         let expirationDate = new Date('now');
 
         expirationDate = new Date(expirationDate.setMonth(expirationDate.getMonth()+1));
         cookies.set('google-credentials', response.toString(), {path: '/', expires: expirationDate});
-        console.log(response);
-        console.log('Google ID : ' + response.googleId);
-        console.log('Token ID : ' + response.tokenId);
-        console.log('Access token ' + response.accessToken);
-        console.log('Token OBJ :' + response.tokenObj);
-        console.log('Profile OBJ :' + response.profileObj);
         this.props.handler();
-        console.log('COOKIE ' + cookies.get('google-credentials'));
     }
 
     googleOnFailure(response) {

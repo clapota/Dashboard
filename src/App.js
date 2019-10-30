@@ -6,6 +6,53 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 import { instanceOf } from 'prop-types';
 import { withCookies, Cookies } from 'react-cookie';
 import Dashboard from './Components/DashboardView';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
+import Settings from './Components/SettingsView';
+
+const isAuthenticated = true;
+
+function NoLogRoute({children, ...rest}) {
+  return (
+    <Route
+      {...rest}
+      render={({location}) =>
+      !isAuthenticated ? (
+        children
+      ) : (
+        <Redirect
+        to={{
+          pathname: "/",
+          state: {from: location}
+        }}
+        />
+      )}
+    />
+  );
+}
+
+function PrivateRoute({children, ...rest}) {
+  return (
+    <Route
+      {...rest}
+      render={({location}) =>
+      isAuthenticated ? (
+        children
+      ) : (
+        <Redirect
+        to={{
+          pathname: "/login",
+          state: {from: location}
+        }}
+        />
+      )}
+    />
+  );
+}
 
 class App extends React.Component {
   static propTypes = {
@@ -19,25 +66,33 @@ class App extends React.Component {
     const { cookies } = props;
     this.reloadCookies = this.reloadCookies.bind(this);
     this.state = {
-      googleCredentials:  cookies.get('google-credentials')
+      googleCredentials:  cookies.get('jwt-dashboard')
     }
   }
 
   reloadCookies() {
     const { cookies } = this.props;
     this.setState({
-      googleCredentials: cookies.get('google-credentials'),
+      googleCredentials: cookies.get('jwt-dashboard'),
     });
   }
 
   render() {
-    if (this.state.googleCredentials === undefined) {
-      return (
-        <LoginView handler={this.reloadCookies} />
-      );
-    } else {
-      return (<Dashboard/>)
-    }
+    return (
+      <Router>
+        <Switch>
+          <PrivateRoute exact path="/">
+            <Dashboard/>
+          </PrivateRoute>
+          <PrivateRoute path="/settings">
+            <Settings/>
+          </PrivateRoute>
+          <NoLogRoute path="/login">
+            <LoginView/>
+          </NoLogRoute>
+        </Switch>
+      </Router>
+    )
   }
 }
 

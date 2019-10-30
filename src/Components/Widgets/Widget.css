@@ -1,0 +1,9 @@
+.modal-dashboard {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) !important;
+    position: absolute !important;
+    width: 400 !important;
+    border: 2px solid #000 !important;
+    background-color: white;
+}
