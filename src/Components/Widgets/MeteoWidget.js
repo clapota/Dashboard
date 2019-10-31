@@ -64,13 +64,6 @@ class MeteoWidget extends React.Component {
         this.fetchMeteoInfo();
     }
 
-    changeCity(_city) {
-        this.setState({
-            ...this.state,
-            city: _city
-        });
-    }
-
     handleOpen() {
         this.setState({
             ...this.state,

@@ -12,9 +12,11 @@ import './Widget.css';
 import Typography from '@material-ui/core/Typography';
 import Select from '@material-ui/core/Select';
 import { Button } from '@material-ui/core';
+import YoutubeSubscribers from './YoutubeSubscribers';
 
 const widgetList = new Map([
     ['meteo', <MeteoWidget/>],
+    ['youtubeSubscribers', <YoutubeSubscribers />]
 ]);
 
 
@@ -27,23 +29,37 @@ class AddNewWidget extends React.Component {
         this.submit = this.submit.bind(this);
 
         let firstWidget;
+        let firstName;
         let i = 0;
         for (let [key, value] of widgetList) {
-            if (i === 0)
+            if (i === 0) {
                 firstWidget = value;
+                firstName = key;
+            }
             ++i;
         }
         this.state = {
             open: false,
             widget: firstWidget,
+            name: firstName,
         };
     }
 
     handleChange(name, e) {
-        console.log('aled');
+        console.log(e.target.value);
+        let ALED;
+        for (let [key, value] of widgetList) {
+            if (key === e.target.value) {
+                ALED = value;
+            }
+        }
+        console.log(ALED);
+        console.log(name);
         this.setState({
             ...this.state,
-            [name]: widgetList[e.target.value],
+            name: e.target.value,
+        }, () => {
+            this.setState({widget:ALED});
         });
     }
 
@@ -64,7 +80,7 @@ class AddNewWidget extends React.Component {
 
     submit() {
         if (this.state.widget !== undefined) {
-            console.log('listener being called !!!!');
+            console.log(this.state.widget);
             this.props.listener(this.state.widget);
         }
         this.setState({
@@ -75,13 +91,8 @@ class AddNewWidget extends React.Component {
 
     render() {
         let optionList = [];
-        let i = 0;
-        let firstValue;
         for (let [key, value] of widgetList.entries()) {
-            if (i === 0)
-                firstValue = key;
             optionList.push(<option value={key}>{key}</option>);
-            i++;
         }
         return (
             <>
@@ -108,7 +119,7 @@ class AddNewWidget extends React.Component {
                         <Select
                             native
                             onChange={e => this.handleChange('widget', e)}
-                            value={firstValue}
+                            value={this.state.name}
                             inputProps={{
                                 name: 'widget',
                             }}

@@ -9,6 +9,7 @@ import ResponsiveDrawer from './Sidebar';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/styles/withStyles';
 import AddNewWidget from './Widgets/AddNewWidget';
+import YoutubeSubscribers from './Widgets/YoutubeSubscribers';
 
 const styles = theme => ({
     root: {

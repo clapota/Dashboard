@@ -1,23 +1,108 @@
 import React from 'react';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import IconButton from '@material-ui/core/IconButton';
+import Modal from '@material-ui/core/Modal';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import MoreVert from '@material-ui/icons/MoreVert';
 
-const clientId = '510533827407-n2igosum7o4v74csdek2page5t52g9th.apps.googleusercontent.com';
+const url = 'https://www.googleapis.com/youtube/v3/channels';
+const apiKey = 'AIzaSyA6OihoMHEMZciRB6KonGj5g_sOfY8boFA';
 
 class YoutubeSubscribers extends React.Component {
     constructor(props) {
         super(props);
+        this.handleClose = this.handleClose.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleOpen = this.handleOpen.bind(this);
         this.state = {
-            chain: this.props.chain,
-            subscribers: undefined
+            username: this.props.username,
+            subscribers: undefined,
+            open: false
+        }
+    }
+
+    handleClose() {
+        this.setState({
+            ...this.state,
+            open: false,
+        });
+        this.fetchSubscribersInfo();
+    }
+
+    handleOpen() {
+        this.setState({
+            ...this.state,
+            open: true,
+        })
+    }
+
+    handleChange(name, event) {
+        this.setState({
+            ...this.state,
+            [name]: event.target.value,
+        });
+
+    }
+
+    fetchSubscribersInfo() {
+        if (this.state.username !== undefined) {
+            const fullUrl = url + '?key=' + apiKey + '&part=id,statistics&forUsername=' + this.state.username
+            fetch(fullUrl)
+                .then(response => response.json())
+                .then(data =>
+                    this.setState({
+                        ...this.state,
+                        subscribers: data.pageInfo.totalResults > 0 ? data.items[0].statistics.subscriberCount : undefined
+            }))
         }
     }
 
     componentDidMount() {
-//        fetch()
+        this.fetchSubscribersInfo();
     }
 
     render() {
         return (
-            <div></div>
+            <>
+                <Card>
+                    <CardHeader
+                        title="Youtube subscribers widget"
+                        action={
+                            <IconButton onClick={this.handleOpen}>
+                                <MoreVert />
+                            </IconButton>
+                        }
+                    />
+                    <CardContent>
+                        {this.state.subscribers === undefined ? this.state.username === undefined ? 'Please select an username' : this.state.username + ': Invalid username' : 'The user ' + this.state.username + ' has ' + this.state.subscribers + ' subscribers'}
+                    </CardContent>
+                </Card>
+                <Modal
+                    open={this.state.open}
+                    onClose={this.handleClose}>
+                        <div className="modal-dashboard">
+                            <Typography variant="h4">
+                                Youtube subscribers settings
+                            </Typography>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="username"
+                                label="Username"
+                                name="username"
+                                autoComplete="username"
+                                autoFocus
+                                defaultValue={this.state.username}
+                                onChange={e => this.handleChange('username', e)}
+                            />  
+                        </div>
+                </Modal>
+            </>
         );
     }
 }
