@@ -1,7 +1,7 @@
 import React from 'react';
 import ResponsiveDrawer from './Sidebar';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/styles';
+import withStyles from '@material-ui/styles/withStyles';
 
 const styles = theme => ({
     root: {

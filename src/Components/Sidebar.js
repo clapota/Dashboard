@@ -11,9 +11,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Home, Settings } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import useTheme from '@material-ui/core/styles/useTheme';
+import Home from '@material-ui/icons/Home';
+import Settings from '@material-ui/icons/Settings';
+import Link from 'react-router-dom/Link';
 
 const drawerWidth = 240;
 

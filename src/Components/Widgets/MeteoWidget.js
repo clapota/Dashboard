@@ -1,11 +1,17 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, IconButton, Modal, TextField, Select, Typography } from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import IconButton from '@material-ui/core/IconButton';
+import Modal from '@material-ui/core/Modal';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import Typography from '@material-ui/core/Typography';
+import MoreVert from '@material-ui/icons/MoreVert';
 import './Widget.css';
 
 const url = 'https://api.openweathermap.org/data/2.5/weather?q=';
 const apiKey = 'f1c2359583253af4b56ab54379447b58';
-
 
 class MeteoWidget extends React.Component {
     constructor(props) {
@@ -89,7 +95,7 @@ class MeteoWidget extends React.Component {
                     }
                 />
                 <CardContent>
-                    {this.state.temperature === undefined ? this.state.city + ': Invalid city' : 'Temperature in ' + this.state.city + ' : ' + this.state.temperature.toFixed(0) +' ' +this.state.unit}
+                    {this.state.temperature === undefined ? this.state.city === undefined ? 'Please select a city' : this.state.city + ': Invalid city' : 'Temperature in ' + this.state.city + ' : ' + this.state.temperature.toFixed(0) +' ' +this.state.unit}
                 </CardContent>
             </Card>
             <Modal

@@ -1,11 +1,14 @@
 import React from 'react';
-import {GridList, GridListTile} from '@material-ui/core';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
 import 'bootstrap/dist/css/bootstrap.css';
 import './DashboardView.css';
 import ResponsiveDrawer from './Sidebar';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/styles';
-import MeteoWidget from './Widgets/MeteoWidget';
+import withStyles from '@material-ui/styles/withStyles';
+import AddNewWidget from './Widgets/AddNewWidget';
 
 const styles = theme => ({
     root: {
@@ -14,6 +17,8 @@ const styles = theme => ({
     content: {
         flexGrow: 1,
         paddingTop: '100px',
+        overflowX: 'hidden',
+        overflowY: 'hidden',
     },
 })
 
@@ -21,8 +26,18 @@ const styles = theme => ({
 class Dashboard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {width: 0, height: 0};
+        this.state = {width: 0, height: 0, widgetList: []};
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+        this.addWidget = this.addWidget.bind(this);
+    }
+
+    addWidget(widget) {
+        let widgets = this.state.widgetList;
+        widgets.push(<GridListTile>{widget}</GridListTile>);
+        this.setState({
+            ...this.state,
+            widgetList: widgets
+        });
     }
 
     componentDidMount() {
@@ -44,9 +59,15 @@ class Dashboard extends React.Component {
             <div className={classes.root}>
                 <ResponsiveDrawer/>
                 <div className={classes.content}>
-                    <GridList cols={this.state.width > 760 ? 2 : 1}>
-                        <GridListTile className="gridlist-tile">
-                            <MeteoWidget city="London"/>
+                    <Container>
+                        <Typography variant="h3">
+                            Welcome to your personnal dashboard
+                        </Typography>
+                    </Container>
+                    <GridList spacing={20} className="gridlist" cols={this.state.width > 760 ? 2 : 1}>
+                        {this.state.widgetList}
+                        <GridListTile>
+                            <AddNewWidget listener={this.addWidget} />
                         </GridListTile>
                     </GridList>
                 </div>

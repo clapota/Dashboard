@@ -1,0 +1,13 @@
+.card-action {
+    display: block !important;
+    text-align: initial !important;
+    width: 100% !important;
+}
+
+.add-card {
+    opacity: 50% !important;
+}
+
+.icon-text::after {
+    content: '  Add new widget';
+}
