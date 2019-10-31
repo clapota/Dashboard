@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/styles/withStyles';
 import AddNewWidget from './Widgets/AddNewWidget';
 import YoutubeSubscribers from './Widgets/YoutubeSubscribers';
+import YoutubeComment from './Widgets/YoutubeComment';
 
 const styles = theme => ({
     root: {

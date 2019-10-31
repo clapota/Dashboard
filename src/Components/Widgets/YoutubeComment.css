@@ -1,0 +1,4 @@
+.card-comment {
+    max-height: 200px;
+    overflow: auto !important;
+}

@@ -13,10 +13,12 @@ import Typography from '@material-ui/core/Typography';
 import Select from '@material-ui/core/Select';
 import { Button } from '@material-ui/core';
 import YoutubeSubscribers from './YoutubeSubscribers';
+import YoutubeComment from './YoutubeComment';
 
 const widgetList = new Map([
     ['meteo', <MeteoWidget/>],
-    ['youtubeSubscribers', <YoutubeSubscribers />]
+    ['youtubeSubscribers', <YoutubeSubscribers />],
+    ['youtube Comment', <YoutubeComment />]
 ]);
 
 
@@ -46,15 +48,12 @@ class AddNewWidget extends React.Component {
     }
 
     handleChange(name, e) {
-        console.log(e.target.value);
         let ALED;
         for (let [key, value] of widgetList) {
             if (key === e.target.value) {
                 ALED = value;
             }
         }
-        console.log(ALED);
-        console.log(name);
         this.setState({
             ...this.state,
             name: e.target.value,
@@ -71,7 +70,6 @@ class AddNewWidget extends React.Component {
     }
 
     showModal() {
-        console.log('zizi');
         this.setState({
             ...this.state,
             open: true
@@ -80,7 +78,6 @@ class AddNewWidget extends React.Component {
 
     submit() {
         if (this.state.widget !== undefined) {
-            console.log(this.state.widget);
             this.props.listener(this.state.widget);
         }
         this.setState({
