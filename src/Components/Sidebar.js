@@ -41,6 +41,10 @@ const useStyles = makeStyles(theme => ({
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
+    background: 'linear-gradient(to top, #0052d4, #4364f7, #6fb1fc)',
+  },
+  link: {
+    color: 'white',
   },
   content: {
     flexGrow: 1,
@@ -66,13 +70,13 @@ function ResponsiveDrawer(props) {
         <Link to="/">
           <ListItem button>
               <ListItemIcon><Home/></ListItemIcon>
-              <ListItemText primary="Home" />
+              <ListItemText classes={{root: classes.link}} primary="Home" />
           </ListItem>
         </Link>
         <Link to="/settings">
           <ListItem button>
               <ListItemIcon><Settings/></ListItemIcon>
-              <ListItemText primary="Settings" />
+              <ListItemText classes={{root: classes.link}} primary="Settings" />
           </ListItem>
         </Link>
       </List>
@@ -106,7 +110,7 @@ function ResponsiveDrawer(props) {
             open={mobileOpen}
             onClose={handleDrawerToggle}
             classes={{
-            paper: classes.drawerPaper,
+              paper: classes.drawerPaper,
             }}
             ModalProps={{
               keepMounted: true,

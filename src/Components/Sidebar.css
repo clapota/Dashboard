@@ -5,3 +5,7 @@
 .sidebar {
     min-width: 200px !important;
 }
+
+.link-sidebar {
+    color: white !important;
+}

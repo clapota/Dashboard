@@ -7,6 +7,29 @@ import { Typography, Container, CardContent, CardHeader, Modal, TextField, Linea
 import IconButton from '@material-ui/core/IconButton';
 import MoreVert from '@material-ui/icons/MoreVert';
 import './Widget.css';
+import PropTypes from 'prop-types';
+import List from '@material-ui/core/List';
+import { withStyles } from '@material-ui/styles';
+
+const styles = themes => ({
+    title: {
+        color: 'white',
+    },
+    header: {
+        backgroundColor: '#3f51b5',
+    },
+    card: {
+        backgroundColor: '#27293d',
+        maxHeight: 400,
+        overflow: 'auto',
+    },
+    list: {
+        overflow: 'auto',
+    },
+    divider: {
+        backgroundColor: 'white',
+    }
+})
 
 const commentThreadUrl = 'https://www.googleapis.com/youtube/v3/commentThreads';
 
@@ -132,25 +155,30 @@ class YoutubeComment extends React.Component {
         let commentList = [];
 
         console.log('TEST 1 2 3');
+        const {classes} = this.props;
         if (this.state.commentList !== undefined) {
             for (let comment of this.state.commentList) {
                 commentList.push(
                     <>
                     <ListItem>
                         <Container>
-                            <Typography variant="h5">{comment.snippet.authorDisplayName}</Typography>
-                            <Typography variant="p">{comment.snippet.textOriginal}</Typography>
+                            <Typography classes={{root: classes.title}} variant="h5">{comment.snippet.authorDisplayName}</Typography>
+                            <Typography variant="p" classes={{root: classes.title}}>{comment.snippet.textOriginal}</Typography>
                         </Container>
                     </ListItem>
-                    <Divider/>
+                    <Divider classes={{root: classes.divider}}/>
                     </>
                 )
             }
         }
         return (
             <>
-                <Card className="card-comment">
+                <Card classes={{root: classes.card}}>
                     <CardHeader 
+                        classes={{
+                            title: classes.title,
+                            root: classes.header,
+                        }}
                         title="Youtube comment widget"
                         action={
                             <IconButton onClick={this.handleOpen}>
@@ -158,7 +186,7 @@ class YoutubeComment extends React.Component {
                             </IconButton>
                         }
                     />
-                    <CardContent>{this.state.loading === true ? (<LinearProgress />) : commentList.length !== 0 ? commentList : this.state.videoLink === undefined ? (<Typography>Please provide a youtube video Url</Typography>) : (<Typography>Invalid url : {this.state.videoLink}</Typography>) }</CardContent>
+                    <CardContent classes={{root: classes.content}}>{this.state.loading === true ? (<LinearProgress />) : commentList.length !== 0 ? <List classes={{root: classes.list}}>{commentList}</List> : this.state.videoLink === undefined ? (<Typography classes={{root: classes.title}}>Please provide a youtube video Url</Typography>) : (<Typography>Invalid url : {this.state.videoLink}</Typography>) }</CardContent>
                 </Card>
                 <Modal
                     open={this.state.open}
@@ -201,4 +229,4 @@ class YoutubeComment extends React.Component {
     }
 }
 
-export default YoutubeComment;
+export default withStyles(styles)(YoutubeComment);

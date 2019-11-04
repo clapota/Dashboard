@@ -7,9 +7,29 @@ import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import MoreVert from '@material-ui/icons/MoreVert';
+import Container from '@material-ui/core/Container';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/styles';
 
 const url = 'https://www.googleapis.com/youtube/v3/channels';
 const apiKey = 'AIzaSyA6OihoMHEMZciRB6KonGj5g_sOfY8boFA';
+
+const styles = themes => ({
+    title: {
+        color: 'white',
+    },
+    header: {
+        backgroundColor: '#3f51b5',
+    },
+    card: {
+        backgroundColor: '#27293d',
+    },
+    subText: {
+        fontSize: '16px',
+        fontSize: '3.5vw',
+        color: 'white',
+    }
+})
 
 class YoutubeSubscribers extends React.Component {
     constructor(props) {
@@ -22,6 +42,10 @@ class YoutubeSubscribers extends React.Component {
             subscribers: undefined,
             open: false
         }
+    }
+
+    numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
     handleClose() {
@@ -65,10 +89,15 @@ class YoutubeSubscribers extends React.Component {
     }
 
     render() {
+        const {classes} = this.props;
         return (
             <>
-                <Card>
+                <Card classes={{root: classes.card}}>
                     <CardHeader
+                        classes={{
+                            title: classes.title,
+                            root: classes.header,
+                        }}
                         title="Youtube subscribers widget"
                         action={
                             <IconButton onClick={this.handleOpen}>
@@ -77,7 +106,15 @@ class YoutubeSubscribers extends React.Component {
                         }
                     />
                     <CardContent>
-                        {this.state.subscribers === undefined ? this.state.username === undefined ? 'Please select an username' : this.state.username + ': Invalid username' : 'The user ' + this.state.username + ' has ' + this.state.subscribers + ' subscribers'}
+                        {this.state.subscribers === undefined ? this.state.username === undefined ? 
+                        <Typography classes={{root: classes.title}}>Please select an username</Typography>
+                        : 
+                        <Typography classes={{root: classes.title}}>{this.state.username} : Invalid username</Typography> 
+                        : 
+                        <Container>
+                        <Typography classes={{root: classes.title}}>Total subcribers :</Typography><Typography classes={{root: classes.subText}}>{this.numberWithCommas(this.state.subscribers)}</Typography><Typography classes={{root: classes.title}}>{this.state.username}</Typography>
+                        </Container>
+                    }
                     </CardContent>
                 </Card>
                 <Modal
@@ -107,4 +144,4 @@ class YoutubeSubscribers extends React.Component {
     }
 }
 
-export default YoutubeSubscribers;
+export default withStyles(styles)(YoutubeSubscribers);

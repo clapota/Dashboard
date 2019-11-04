@@ -11,6 +11,7 @@ import withStyles from '@material-ui/styles/withStyles';
 import AddNewWidget from './Widgets/AddNewWidget';
 import YoutubeSubscribers from './Widgets/YoutubeSubscribers';
 import YoutubeComment from './Widgets/YoutubeComment';
+import { Divider } from '@material-ui/core';
 
 const styles = theme => ({
     root: {
@@ -22,6 +23,9 @@ const styles = theme => ({
         overflowX: 'hidden',
         overflowY: 'hidden',
     },
+    title: {
+        color: 'white',
+    }
 })
 
 
@@ -61,14 +65,12 @@ class Dashboard extends React.Component {
             <div className={classes.root}>
                 <ResponsiveDrawer/>
                 <div className={classes.content}>
-                    <Container>
-                        <Typography variant="h3">
-                            Welcome to your personnal dashboard
-                        </Typography>
+                    <Container maxWidth="sm">
+                        <img className="img-dashboard" src="https://images.vexels.com/media/users/3/137617/isolated/preview/c45afb857e72b86e87baaf255f71ff37-geometric-logo-abstract-by-vexels.png" />
                     </Container>
-                    <GridList spacing={20} className="gridlist" cols={this.state.width > 760 ? 2 : 1}>
+                    <GridList cellHeight="auto" className="gridlist" cols={this.state.width > 760 ? 2 : 1}>
                         {this.state.widgetList}
-                        <GridListTile>
+                        <GridListTile className="gridlist-tile">
                             <AddNewWidget listener={this.addWidget} />
                         </GridListTile>
                     </GridList>

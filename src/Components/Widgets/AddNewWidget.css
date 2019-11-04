@@ -5,7 +5,12 @@
 }
 
 .add-card {
-    opacity: 50% !important;
+/*    opacity: 50% !important;*/
+    background-color: #3f51b5 !important;
+}
+
+.icon-text {
+    color: white !important;
 }
 
 .icon-text::after {

@@ -9,9 +9,27 @@ import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 import MoreVert from '@material-ui/icons/MoreVert';
 import './Widget.css';
+import RadialChart from '../RadialBar';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/styles';
 
 const url = 'https://api.openweathermap.org/data/2.5/weather?q=';
 const apiKey = 'f1c2359583253af4b56ab54379447b58';
+
+const styles = themes => ({
+    title: {
+        color: 'white',
+    },
+    header: {
+        backgroundColor: '#3f51b5',
+    },
+    action: {
+        color: 'white',
+    },
+    card: {
+        backgroundColor: '#27293d',
+    }
+});
 
 class MeteoWidget extends React.Component {
     constructor(props) {
@@ -76,10 +94,20 @@ class MeteoWidget extends React.Component {
     }
 
     render() {
+        const {classes} = this.props;
+        console.log('re Render');
+        console.log(this.state.unit);
         return (
             <>
-            <Card>
+            <Card classes={{
+                root: classes.card,
+            }}>
                 <CardHeader
+                    classes={{
+                        title: classes.title,
+                        root: classes.header,
+                        action: classes.action,
+                    }}
                     title="Meteo widget"
                     action={
                         <IconButton onClick={this.handleOpen}>
@@ -88,7 +116,7 @@ class MeteoWidget extends React.Component {
                     }
                 />
                 <CardContent>
-                    {this.state.temperature === undefined ? this.state.city === undefined ? 'Please select a city' : this.state.city + ': Invalid city' : 'Temperature in ' + this.state.city + ' : ' + this.state.temperature.toFixed(0) +' ' +this.state.unit}
+                    {this.state.temperature === undefined ? this.state.city === undefined ? <Typography classes={{root: classes.title}}>Please select a city</Typography> : <Typography classes={{root: classes.title}}> {this.state.city} : Invalid city </Typography> : <RadialChart unit={this.state.unit} degree={this.state.temperature} city={this.state.city} />}
                 </CardContent>
             </Card>
             <Modal
@@ -131,4 +159,4 @@ class MeteoWidget extends React.Component {
     }
 }
 
-export default MeteoWidget;
+export default withStyles(styles)(MeteoWidget);
