@@ -1,17 +1,12 @@
 import React from 'react';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 import 'bootstrap/dist/css/bootstrap.css';
 import './DashboardView.css';
 import ResponsiveDrawer from './Sidebar';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/styles/withStyles';
 import AddNewWidget from './Widgets/AddNewWidget';
-import YoutubeSubscribers from './Widgets/YoutubeSubscribers';
-import YoutubeComment from './Widgets/YoutubeComment';
-import { Divider } from '@material-ui/core';
 
 const styles = theme => ({
     root: {
@@ -39,7 +34,7 @@ class Dashboard extends React.Component {
 
     addWidget(widget) {
         let widgets = this.state.widgetList;
-        widgets.push(<GridListTile>{widget}</GridListTile>);
+        widgets.push(<GridListTile className="gridlist-tile">{widget}</GridListTile>);
         this.setState({
             ...this.state,
             widgetList: widgets
@@ -65,9 +60,6 @@ class Dashboard extends React.Component {
             <div className={classes.root}>
                 <ResponsiveDrawer/>
                 <div className={classes.content}>
-                    <Container maxWidth="sm">
-                        <img className="img-dashboard" src="https://images.vexels.com/media/users/3/137617/isolated/preview/c45afb857e72b86e87baaf255f71ff37-geometric-logo-abstract-by-vexels.png" />
-                    </Container>
                     <GridList cellHeight="auto" className="gridlist" cols={this.state.width > 760 ? 2 : 1}>
                         {this.state.widgetList}
                         <GridListTile className="gridlist-tile">

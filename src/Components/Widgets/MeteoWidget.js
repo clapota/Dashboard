@@ -10,7 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import MoreVert from '@material-ui/icons/MoreVert';
 import './Widget.css';
 import RadialChart from '../RadialBar';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';
 
 const url = 'https://api.openweathermap.org/data/2.5/weather?q=';

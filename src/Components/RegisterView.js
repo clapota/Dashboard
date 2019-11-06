@@ -1,13 +1,13 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import './LoginView.css';
+import './RegisterView.css';
 import { instanceOf } from 'prop-types';
 import { withCookies, Cookies } from 'react-cookie';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/styles/withStyles';
 import Card from '@material-ui/core/Card';
-import { Container, CssBaseline, Avatar, TextField, Typography} from '@material-ui/core';
+import { Avatar, TextField, Typography} from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Link from 'react-router-dom/Link';
 
@@ -39,8 +39,9 @@ const styles = theme => ({
     }
 })
 
+const apiUrl = process.env.API_URL || 'localhost:3001';
 
-class LoginView extends React.Component {
+class RegisterView extends React.Component {
     static propTypes = {
         cookies: instanceOf(Cookies).isRequired
     };
@@ -49,11 +50,38 @@ class LoginView extends React.Component {
         super(props);
 
         this.state = {
-            username: '',
             password: '',
+            username: '',
+            repeat: '',
         }
         this.handleChange = this.handleChange.bind(this);
-        this.login = this.login.bind(this);
+        this.register = this.register.bind(this);
+    }
+
+    register(e) {
+        e.preventDefault();
+        if (this.state.password === this.state.repeat && this.state.password.trim().length >= 4 && this.state.username.trim().length >= 4) {
+            const User = {username: this.state.username, password: this.state.password};
+            const endpoint = apiUrl + '/login';
+
+            console.log(endpoint);
+            fetch(endpoint, {
+                method: 'POST',
+                body: JSON.stringify(User),
+            })
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function(json) {
+                        console.log(json);
+                    });
+                } else {
+                    alert('Unknown network error, please try again later');
+                }
+            })
+            .catch(error => alert('Error ' + error.message));
+        } else {
+            alert('Form is invalid');
+        }
     }
 
     handleChange(name, event) {
@@ -61,11 +89,6 @@ class LoginView extends React.Component {
             ...this.state,
             [name]: event.target.value
         });
-    }
-
-    login(e) {
-        e.preventDefault();
-        alert('not implemented');
     }
 
     render() {
@@ -84,7 +107,7 @@ class LoginView extends React.Component {
                                     <LockOutlinedIcon />
                                 </Avatar>
                                 <Typography component="h1" variant="h5" classes={{root: classes.text}}>
-                                    Sign in
+                                    Register
                                 </Typography>
                                 <form className="form" noValidate>
                                 <TextField
@@ -127,18 +150,39 @@ class LoginView extends React.Component {
                                     id="password"
                                     autoComplete="current-password"
                                 />
+                                <TextField
+                                    classes={{root: classes.textfield}}
+                                    required
+                                    fullWidth
+                                    InputLabelProps={{
+                                        style: {color: 'white'}
+                                    }}
+                                    InputProps={{
+                                        style: {color: 'white'}
+                                    }}
+                                    FormHelperTextProps={{
+                                        style: {color: 'white'}
+                                    }}
+                                    color="secondary"
+                                    onChange={e => this.handleChange('repeat', e)}
+                                    name="repeat"
+                                    label="Repeat"
+                                    type="password"
+                                    id="repeat"
+                                    autoComplete="current-password"
+                                />
                                 <Button
                                     type="submit"
                                     fullWidth
                                     variant="contained"
                                     color="primary"
                                     className="submit"
-                                    onClick={e => this.login(e)}
+                                    onClick={e => this.register(e)}
                                 >
-                                    Sign In
+                                    Register
                                 </Button>
                                 </form>
-                                <Link className="link" to="/register">Register now</Link>
+                                <Link className="link" to="/login">Login</Link>
                             </div>
                         </Card>
                     </Grid>
@@ -146,4 +190,4 @@ class LoginView extends React.Component {
     }
 }
 
-export default withCookies(withStyles(styles)(LoginView));
+export default withCookies(withStyles(styles)(RegisterView));

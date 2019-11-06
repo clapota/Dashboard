@@ -8,7 +8,6 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import MoreVert from '@material-ui/icons/MoreVert';
 import Container from '@material-ui/core/Container';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';
 
 const url = 'https://www.googleapis.com/youtube/v3/channels';
@@ -25,7 +24,6 @@ const styles = themes => ({
         backgroundColor: '#27293d',
     },
     subText: {
-        fontSize: '16px',
         fontSize: '3.5vw',
         color: 'white',
     }

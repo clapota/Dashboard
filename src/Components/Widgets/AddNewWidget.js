@@ -88,7 +88,7 @@ class AddNewWidget extends React.Component {
 
     render() {
         let optionList = [];
-        for (let [key, value] of widgetList.entries()) {
+        for (let [key] of widgetList.entries()) {
             optionList.push(<option value={key}>{key}</option>);
         }
         return (

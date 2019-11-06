@@ -13,8 +13,9 @@ import {
   Redirect,
 } from "react-router-dom";
 import Settings from './Components/SettingsView';
+import RegisterView from './Components/RegisterView';
 
-const isAuthenticated = true;
+const isAuthenticated = false;
 
 function NoLogRoute({children, ...rest}) {
   return (
@@ -89,6 +90,9 @@ class App extends React.Component {
           </PrivateRoute>
           <NoLogRoute path="/login">
             <LoginView/>
+          </NoLogRoute>
+          <NoLogRoute path="/register">
+            <RegisterView />
           </NoLogRoute>
         </Switch>
       </Router>

@@ -7,7 +7,6 @@ import { Typography, Container, CardContent, CardHeader, Modal, TextField, Linea
 import IconButton from '@material-ui/core/IconButton';
 import MoreVert from '@material-ui/icons/MoreVert';
 import './Widget.css';
-import PropTypes from 'prop-types';
 import List from '@material-ui/core/List';
 import { withStyles } from '@material-ui/styles';
 
