@@ -14,11 +14,13 @@ import Select from '@material-ui/core/Select';
 import { Button } from '@material-ui/core';
 import YoutubeSubscribers from './YoutubeSubscribers';
 import YoutubeComment from './YoutubeComment';
+import YoutubeView from './YoutubeView';
 
 const widgetList = new Map([
     ['meteo', <MeteoWidget/>],
     ['youtubeSubscribers', <YoutubeSubscribers />],
-    ['youtube Comment', <YoutubeComment />]
+    ['youtube Comment', <YoutubeComment />],
+    ['youtube Views', <YoutubeView />],
 ]);
 
 

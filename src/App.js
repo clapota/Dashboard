@@ -15,7 +15,7 @@ import {
 import Settings from './Components/SettingsView';
 import RegisterView from './Components/RegisterView';
 
-const isAuthenticated = false;
+const isAuthenticated = true;
 
 function NoLogRoute({children, ...rest}) {
   return (

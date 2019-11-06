@@ -138,7 +138,7 @@ class YoutubeComment extends React.Component {
         return 0;
     }
 
-    youtubeParser(url){
+    youtubeParser(url) {
         if (url === undefined)
             return false;
         var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
