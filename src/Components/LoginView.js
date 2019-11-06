@@ -9,7 +9,7 @@ import withStyles from '@material-ui/styles/withStyles';
 import Card from '@material-ui/core/Card';
 import { Container, CssBaseline, Avatar, TextField, Typography} from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Link from 'react-router-dom/Link';
+import { Link } from 'react-router-dom';
 
 const styles = theme => ({
     root: {
