@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/user');
+const auth = require('./middleware/auth');
 
 // ENV
 const hostname = process.env.HOSTNAME || 'localhost';
@@ -28,7 +29,7 @@ app.post('/login', async (req, res) => {
 		}
 		const token = await user.generateAuthToken();
 		delete user.tokens;
-		res.send({ user, token });
+		res.send({ token });
 	} catch (error) {
 		res.status(400).send({error: error.toString()});
 	}
@@ -41,6 +42,47 @@ app.post('/register', async (req, res) => {
 		const token = await user.generateAuthToken();
 		delete user.tokens;
 		res.status(200).send({ user, token });
+	} catch (error) {
+		res.status(400).send({error: error.toString()});
+	}
+});
+
+app.post('/logout', auth, async (req, res) => {
+	try {
+		req.user.tokens = req.user.tokens.filter((token) => {
+			return token.token !== req.token;
+		});
+		await req.user.save();
+		res.send();
+	} catch(error) {
+		res.status(400).send({error: error.toString()});
+	}
+});
+
+app.post('/logoutall', auth, async (req, res) => {
+	try {
+		req.user.tokens.splice(0, req.user.tokens.length);
+		await req.user.save();
+		res.send();
+	} catch (error) {
+		res.status(400).send({error: error.toString()});
+	}
+});
+
+app.post('/widgets', auth, async (req, res) => {
+	try {
+		req.user.widgets = req.body;
+		req.user.markModified('widgets');
+		await req.user.save();
+		res.send();
+	} catch (error) {
+		res.status(400).send({error: error.toString()});
+	}
+});
+
+app.get('/widgets', auth, async (req, res) => {
+	try {
+		res.json(req.user.widgets);
 	} catch (error) {
 		res.status(400).send({error: error.toString()});
 	}
