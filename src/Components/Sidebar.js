@@ -15,7 +15,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTheme from '@material-ui/core/styles/useTheme';
 import Home from '@material-ui/icons/Home';
 import Settings from '@material-ui/icons/Settings';
-import { Link } from 'react-router-dom';
+import Link from 'react-router-dom/Link';
 
 const drawerWidth = 240;
 
