@@ -91,7 +91,7 @@ class AddNewWidget extends React.Component {
     render() {
         let optionList = [];
         for (let [key] of widgetList.entries()) {
-            optionList.push(<option value={key}>{key}</option>);
+            optionList.push(key);
         }
         return (
             <>
@@ -123,7 +123,7 @@ class AddNewWidget extends React.Component {
                                 name: 'widget',
                             }}
                         >
-                            {optionList}
+                            {optionList.map((i) => <option key={i}>{i}</option>)}
                         </Select>
                         <Button variant="contained" color="primary" onClick={this.submit}>
                             Add this widget
