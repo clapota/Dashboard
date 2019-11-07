@@ -4,9 +4,8 @@ const User = require('./models/user');
 const auth = require('./middleware/auth');
 
 // ENV
-const hostname = process.env.HOSTNAME || 'localhost';
-const serverPort = parseInt(process.env.SERVER_PORT) || 3000;
-const dbUrl = process.env.DB_URL;
+const serverPort = parseInt(process.env.PORT) || 3000;
+const dbUrl = `mongodb://${process.env.DB_HOST}/`;
 
 const app = express();
 
@@ -16,7 +15,7 @@ mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true, useCr
 
 const db = mongoose.connection;
 
-db.on('error', () => console.error(console, 'Error when connecting to database'));
+db.on('error', () => console.error('Error when connecting to database at url: ' + dbUrl));
 db.once('open', () => console.log("Connected to database"));
 
 app.post('/login', async (req, res) => {
@@ -88,6 +87,6 @@ app.get('/widgets', auth, async (req, res) => {
 	}
 });
 
-app.listen(serverPort, hostname, () => {
-	console.log("Server starting on http://" + hostname + ":" + serverPort);
+app.listen(serverPort, () => {
+	console.log("Server starting on port: " + serverPort);
 });
