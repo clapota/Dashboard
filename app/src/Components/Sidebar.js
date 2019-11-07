@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   appBar: {
-    backgroundColor: 'white',
+    backgroundColor: '#545BD9',
     marginLeft: drawerWidth,
     [theme.breakpoints.up('sm')]: {
       width: `calc(100% - ${drawerWidth}px)`,
@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
 
   menuButton: {
-    color: 'black',
+    color: 'white',
     marginRight: theme.spacing(2),
     [theme.breakpoints.up('sm')]: {
       display: 'none',
@@ -43,23 +43,30 @@ const useStyles = makeStyles(theme => ({
   },
   addButton: {
     marginLeft: theme.spacing(2),
-    color: 'black',
+    color: 'white',
   },
 
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
-    backgroundColor: 'white',
+    backgroundColor: '#273756',
+    boxShadow: '2px 2px 20px 1px rgba(80, 80, 80, 1)'
   },
   link: {
-    color: 'black',
+    color: 'white',
+    fontWeight: 800,
+  },
+  icon: {
+    color: 'white',
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
   },
   title: {
-    color: 'black',
+    color: 'white',
+    letterSpacing: 4,
+    fontWeight: 800,
   },
   toolbarApp: {
     justifyContent: 'space-between',
@@ -82,14 +89,14 @@ function ResponsiveDrawer(props) {
       <List>
         <Link to="/">
           <ListItem button>
-              <ListItemIcon><Home/></ListItemIcon>
-              <ListItemText classes={{root: classes.link}} primary="Home" />
+              <ListItemIcon classes={{root: classes.icon}}><Home/></ListItemIcon>
+              <ListItemText classes={{root: classes.link}} primary="HOME" />
           </ListItem>
         </Link>
-        <Link to="/settings">
+        <Link to="/settings" >
           <ListItem button>
-              <ListItemIcon><Settings/></ListItemIcon>
-              <ListItemText classes={{root: classes.link}} primary="Settings" />
+              <ListItemIcon classes={{root: classes.icon}}><Settings/></ListItemIcon>
+              <ListItemText classes={{root: classes.link}} primary="SETTINGS" />
           </ListItem>
         </Link>
       </List>
@@ -110,7 +117,7 @@ function ResponsiveDrawer(props) {
             <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap classes={{root: classes.title}}>
-            Dashboard
+            DASHBOARD
         </Typography>
         <IconButton
           color="inherit"

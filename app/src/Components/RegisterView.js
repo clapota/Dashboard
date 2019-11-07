@@ -39,8 +39,8 @@ const styles = theme => ({
     }
 })
 
-const apiUrl = process.env.API_URL || 'localhost:3001';
-
+const apiUrl = 'http://' + (process.env.API_HOST || 'localhost:3000');
+console.log('API : ' + process.env.API_HOST);
 class RegisterView extends React.Component {
     static propTypes = {
         cookies: instanceOf(Cookies).isRequired
@@ -64,7 +64,6 @@ class RegisterView extends React.Component {
             const User = {username: this.state.username, password: this.state.password};
             const endpoint = apiUrl + '/login';
 
-            console.log(endpoint);
             fetch(endpoint, {
                 method: 'POST',
                 body: JSON.stringify(User),

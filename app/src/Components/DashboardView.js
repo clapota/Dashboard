@@ -35,11 +35,10 @@ const styles = theme => ({
     },
     gridListTile: {
         padding: '0 !important',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
-        transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
-        '&:hover': {
-            boxShadow: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)',
-        }
+        boxShadow: '0 4px 4px rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22)',
+    },
+    gridTile: {
+        overflow: 'inherit',
     }
 })
 
@@ -55,12 +54,12 @@ class Dashboard extends React.Component {
     }
 
     moveWidget = (index, monitor, component) => {
-        let widgets = this.state.widgetList;
+        let widgets = [...this.state.widgetList];
+        let tmp = widgets[component.index];
 
-        widgets[component.index] = widgets.splice(index, 1, widgets[component.index])[0];
-        console.log('SWAPPING MATE !!!!');
+        widgets[component.index] = widgets[index];
+        widgets[index] = tmp;
         this.setState({
-            ...this.state,
             widgetList: widgets,
         });
     }
@@ -75,7 +74,6 @@ class Dashboard extends React.Component {
     }
 
     triggerEdit(e) {
-        console.log('zizi');
         e.preventDefault();
         this.setState({
             ...this.state,
@@ -100,20 +98,21 @@ class Dashboard extends React.Component {
         const {classes} = this.props;
         let editTrigger = undefined;
         let widgets = [];
+
         if (this.state.editMode === false) {
             for (let widget of this.state.widgetList) {
-                widgets.push(<GridListTile>{widget}</GridListTile>);
+                widgets.push(<GridListTile classes={{tile: classes.gridTile}}>{widget}</GridListTile>);
             }
         } else {
             let i = 0;
             for (let widget of this.state.widgetList) {
-                widgets.push(<GridListTile><DropableZone index={i}  callback={this.moveWidget}><DragableItem index={i} child={widget} /></DropableZone></GridListTile>);
+                widgets.push(<GridListTile classes={{tile: classes.gridTile}}><DropableZone index={i}  callback={this.moveWidget}><DragableItem index={i} child={widget} /></DropableZone></GridListTile>);
                 i++;
             }
         }
         if (this.state.editMode === true) {
             editTrigger =
-            (<GridListTile classes={{root: classes.gridListTile}}>
+            (<GridListTile classes={{tile: classes.gridListTile}}>
                 <AddNewWidget listener={this.addWidget} />
             </GridListTile>);
         }

@@ -18,6 +18,10 @@ const apiKey = 'f1c2359583253af4b56ab54379447b58';
 const styles = themes => ({
     title: {
         color: 'black',
+        fontWeight: 800
+    },
+    text: {
+        color: 'black',
     },
     header: {
         backgroundColor: 'white',
@@ -33,7 +37,6 @@ const styles = themes => ({
 class MeteoWidget extends React.Component {
     constructor(props) {
         super(props);
-        this.showOptions = this.showOptions.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -45,13 +48,7 @@ class MeteoWidget extends React.Component {
         };
     }
 
-    componentWillUnmount() {
-        console.log('ADIEU METEO, JE TAI AIMÉ');
-    }
-
     fetchMeteoInfo() {
-        console.log('RE FETCH DE LA METEO');
-        console.log('URL : ' + url + this.state.city + '&APPID=' + apiKey);
         fetch(url + this.state.city + '&APPID=' + apiKey)
             .then(response => response.json())
             .then(data =>
@@ -63,7 +60,6 @@ class MeteoWidget extends React.Component {
                 ...this.state,
                 temperature: undefined
             }))
-        console.log('BITE de noir');
     }
 
     handleChange(name, event) {
@@ -71,10 +67,6 @@ class MeteoWidget extends React.Component {
             ...this.state,
             [name]: event.target.value
         });
-    }
-
-    showOptions() {
-        console.log('test');
     }
 
     handleClose() {
@@ -98,8 +90,7 @@ class MeteoWidget extends React.Component {
 
     render() {
         const {classes} = this.props;
-        console.log('re Render');
-        console.log(this.state.unit);
+
         return (
             <>
             <Card classes={{
@@ -119,7 +110,7 @@ class MeteoWidget extends React.Component {
                     }
                 />
                 <CardContent>
-                    {this.state.temperature === undefined ? this.state.city === undefined ? <Typography classes={{root: classes.title}}>Please select a city</Typography> : <Typography classes={{root: classes.title}}> {this.state.city} : Invalid city </Typography> : <RadialChart unit={this.state.unit} degree={this.state.temperature} city={this.state.city} />}
+                    {this.state.temperature === undefined ? this.state.city === undefined ? <Typography classes={{root: classes.text}}>Please select a city</Typography> : <Typography classes={{root: classes.text}}> {this.state.city} : Invalid city </Typography> : <RadialChart unit={this.state.unit} degree={this.state.temperature} city={this.state.city} />}
                 </CardContent>
             </Card>
             <Modal
