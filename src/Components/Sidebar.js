@@ -1,6 +1,6 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
-import Divider from '@material-ui/core/Divider';
+import EditIcon from '@material-ui/icons/Edit';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
@@ -27,29 +27,43 @@ const useStyles = makeStyles(theme => ({
     },
   },
   appBar: {
+    backgroundColor: 'white',
     marginLeft: drawerWidth,
     [theme.breakpoints.up('sm')]: {
       width: `calc(100% - ${drawerWidth}px)`,
     },
   },
+
   menuButton: {
+    color: 'black',
     marginRight: theme.spacing(2),
     [theme.breakpoints.up('sm')]: {
       display: 'none',
     },
   },
+  addButton: {
+    marginLeft: theme.spacing(2),
+    color: 'black',
+  },
+
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
-    background: 'linear-gradient(to top, #0052d4, #4364f7, #6fb1fc)',
+    backgroundColor: 'white',
   },
   link: {
-    color: 'white',
+    color: 'black',
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  title: {
+    color: 'black',
+  },
+  toolbarApp: {
+    justifyContent: 'space-between',
+  }
 }));
 
 function ResponsiveDrawer(props) {
@@ -65,7 +79,6 @@ function ResponsiveDrawer(props) {
   const drawer = (
     <div>
       <div className={classes.toolbar} />
-      <Divider />
       <List>
         <Link to="/">
           <ListItem button>
@@ -86,7 +99,7 @@ function ResponsiveDrawer(props) {
   return (
     <>
     <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
+        <Toolbar classes={{root: classes.toolbarApp}}>
         <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -96,9 +109,18 @@ function ResponsiveDrawer(props) {
         >
             <MenuIcon />
         </IconButton>
-        <Typography variant="h6" noWrap>
+        <Typography variant="h6" noWrap classes={{root: classes.title}}>
             Dashboard
         </Typography>
+        <IconButton
+          color="inherit"
+          aria-label="modify dashboard"
+          edge="end"
+          onClick={e => props.onEdit(e)}
+          className={classes.addButton}
+        >
+          <EditIcon />
+        </IconButton>
         </Toolbar>
     </AppBar>
     <nav className={classes.drawer} aria-label="mailbox folders">
@@ -122,7 +144,7 @@ function ResponsiveDrawer(props) {
         <Hidden xsDown implementation="css">
         <Drawer
             classes={{
-            paper: classes.drawerPaper,
+              paper: classes.drawerPaper,
             }}
             variant="permanent"
             open

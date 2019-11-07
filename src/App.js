@@ -14,8 +14,12 @@ import {
 } from "react-router-dom";
 import Settings from './Components/SettingsView';
 import RegisterView from './Components/RegisterView';
+import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
 
 const isAuthenticated = true;
+
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme)
 
 function NoLogRoute({children, ...rest}) {
   return (
@@ -80,22 +84,24 @@ class App extends React.Component {
 
   render() {
     return (
-      <Router>
-        <Switch>
-          <PrivateRoute exact path="/">
-            <Dashboard/>
-          </PrivateRoute>
-          <PrivateRoute path="/settings">
-            <Settings/>
-          </PrivateRoute>
-          <NoLogRoute path="/login">
-            <LoginView/>
-          </NoLogRoute>
-          <NoLogRoute path="/register">
-            <RegisterView />
-          </NoLogRoute>
-        </Switch>
-      </Router>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <Switch>
+            <PrivateRoute exact path="/">
+              <Dashboard/>
+            </PrivateRoute>
+            <PrivateRoute path="/settings">
+              <Settings/>
+            </PrivateRoute>
+            <NoLogRoute path="/login">
+              <LoginView/>
+            </NoLogRoute>
+            <NoLogRoute path="/register">
+              <RegisterView />
+            </NoLogRoute>
+          </Switch>
+        </Router>
+      </ThemeProvider>
     )
   }
 }

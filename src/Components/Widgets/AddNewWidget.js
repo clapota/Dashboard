@@ -4,7 +4,7 @@ import Card from '@material-ui/core/Card';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import CardContent from '@material-ui/core/CardContent';
 import Icon from '@material-ui/core/Icon';
-import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 import Add from '@material-ui/icons/Add';
 import './AddNewWidget.css';
 import Modal from '@material-ui/core/Modal';
@@ -100,11 +100,11 @@ class AddNewWidget extends React.Component {
                     onClick={this.showModal}
                     className="card-action">
                         <CardContent>
-                            <Container>
-                                <Icon className="icon-text">
-                                    <Add/>
-                                </Icon>
-                            </Container>
+                            <Grid container alignItems="center" justify="center">
+                                    <Icon className="icon-text">
+                                        <Add/>
+                                    </Icon>
+                            </Grid>
                         </CardContent>
                     </ButtonBase>
                 </Card>
@@ -112,7 +112,7 @@ class AddNewWidget extends React.Component {
                 open={this.state.open}
                 onClose={this.handleClose}>
                     <div className="modal-dashboard">
-                        <Typography variant="h4">
+                        <Typography variant="h4" className="text">
                             Add a widget
                         </Typography>
                         <Select

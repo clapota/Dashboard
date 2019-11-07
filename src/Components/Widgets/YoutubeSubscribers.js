@@ -15,17 +15,17 @@ const apiKey = 'AIzaSyA6OihoMHEMZciRB6KonGj5g_sOfY8boFA';
 
 const styles = themes => ({
     title: {
-        color: 'white',
+        color: 'black',
     },
     header: {
-        backgroundColor: '#3f51b5',
+        backgroundColor: 'white',
     },
     card: {
-        backgroundColor: '#27293d',
+        backgroundColor: 'lightgrey',
     },
     subText: {
         fontSize: '3.5vw',
-        color: 'white',
+        color: 'black',
     }
 })
 

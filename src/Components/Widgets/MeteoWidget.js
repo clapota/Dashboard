@@ -17,16 +17,16 @@ const apiKey = 'f1c2359583253af4b56ab54379447b58';
 
 const styles = themes => ({
     title: {
-        color: 'white',
+        color: 'black',
     },
     header: {
-        backgroundColor: '#3f51b5',
+        backgroundColor: 'white',
     },
     action: {
         color: 'white',
     },
     card: {
-        backgroundColor: '#27293d',
+        backgroundColor: 'lightgrey',
     }
 });
 
@@ -43,6 +43,10 @@ class MeteoWidget extends React.Component {
             unit: 'celsius',
             temperature: undefined
         };
+    }
+
+    componentWillUnmount() {
+        console.log('ADIEU METEO, JE TAI AIMÉ');
     }
 
     fetchMeteoInfo() {

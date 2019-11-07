@@ -12,13 +12,13 @@ import { withStyles } from '@material-ui/styles';
 
 const styles = themes => ({
     title: {
-        color: 'white',
+        color: 'black',
     },
     header: {
-        backgroundColor: '#3f51b5',
+        backgroundColor: 'white',
     },
     card: {
-        backgroundColor: '#27293d',
+        backgroundColor: 'lightgrey',
         maxHeight: 400,
         overflow: 'auto',
     },
