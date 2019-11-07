@@ -11,13 +11,21 @@ let userSchema = mongoose.Schema({
 	},
 	password: {
 		type: String,
-		required: true
+		required: true,
 	},
 	tokens: [{
 		token: {
 			type: String,
-			required: true
+			required: true,
 		}
+	}],
+	widgets: [{
+		_id: false,
+		type: {
+			type: String,
+			required: true,
+		},
+		config: { type: Object },
 	}]
 });
 

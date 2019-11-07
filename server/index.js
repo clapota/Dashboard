@@ -1,11 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/user');
+const auth = require('./middleware/auth');
 
 // ENV
-const hostname = process.env.HOSTNAME || 'localhost';
-const serverPort = parseInt(process.env.SERVER_PORT) || 3000;
-const dbUrl = process.env.DB_URL;
+const serverPort = parseInt(process.env.PORT) || 3000;
+const dbUrl = `mongodb://${process.env.DB_HOST}/`;
 
 const app = express();
 
@@ -15,7 +15,7 @@ mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true, useCr
 
 const db = mongoose.connection;
 
-db.on('error', () => console.error(console, 'Error when connecting to database'));
+db.on('error', () => console.error('Error when connecting to database at url: ' + dbUrl));
 db.once('open', () => console.log("Connected to database"));
 
 app.post('/login', async (req, res) => {
@@ -28,7 +28,7 @@ app.post('/login', async (req, res) => {
 		}
 		const token = await user.generateAuthToken();
 		delete user.tokens;
-		res.send({ user, token });
+		res.send({ token });
 	} catch (error) {
 		res.status(400).send({error: error.toString()});
 	}
@@ -46,6 +46,47 @@ app.post('/register', async (req, res) => {
 	}
 });
 
-app.listen(serverPort, hostname, () => {
-	console.log("Server starting on http://" + hostname + ":" + serverPort);
+app.post('/logout', auth, async (req, res) => {
+	try {
+		req.user.tokens = req.user.tokens.filter((token) => {
+			return token.token !== req.token;
+		});
+		await req.user.save();
+		res.send();
+	} catch(error) {
+		res.status(400).send({error: error.toString()});
+	}
+});
+
+app.post('/logoutall', auth, async (req, res) => {
+	try {
+		req.user.tokens.splice(0, req.user.tokens.length);
+		await req.user.save();
+		res.send();
+	} catch (error) {
+		res.status(400).send({error: error.toString()});
+	}
+});
+
+app.post('/widgets', auth, async (req, res) => {
+	try {
+		req.user.widgets = req.body;
+		req.user.markModified('widgets');
+		await req.user.save();
+		res.send();
+	} catch (error) {
+		res.status(400).send({error: error.toString()});
+	}
+});
+
+app.get('/widgets', auth, async (req, res) => {
+	try {
+		res.json(req.user.widgets);
+	} catch (error) {
+		res.status(400).send({error: error.toString()});
+	}
+});
+
+app.listen(serverPort, () => {
+	console.log("Server starting on port: " + serverPort);
 });
