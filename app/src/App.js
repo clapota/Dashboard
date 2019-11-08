@@ -16,12 +16,10 @@ import Settings from './Components/SettingsView';
 import RegisterView from './Components/RegisterView';
 import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
 
-const isAuthenticated = true;
-
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme)
 
-function NoLogRoute({children, ...rest}) {
+function NoLogRoute({isAuthenticated, children, ...rest}) {
   return (
     <Route
       {...rest}
@@ -40,7 +38,7 @@ function NoLogRoute({children, ...rest}) {
   );
 }
 
-function PrivateRoute({children, ...rest}) {
+function PrivateRoute({isAuthenticated, children, ...rest}) {
   return (
     <Route
       {...rest}
@@ -70,16 +68,38 @@ class App extends React.Component {
 
     const { cookies } = props;
     this.reloadCookies = this.reloadCookies.bind(this);
+    this.reloadApp = this.reloadApp.bind(this);
+    this.checkJwt = this.checkJwt.bind(this);
     this.state = {
-      googleCredentials:  cookies.get('jwt-dashboard')
+      jwt:  cookies.get('jwt-dashboard'),
+      isAuthenticated: false,
     }
   }
 
   reloadCookies() {
     const { cookies } = this.props;
     this.setState({
-      googleCredentials: cookies.get('jwt-dashboard'),
+      jwt: cookies.get('jwt-dashboard'),
     });
+  }
+
+  reloadApp() {
+    const {cookies} = this.props;
+    console.log('toto');
+    this.setState({...this.state, jwt: cookies.get('jwt-dashboard')});
+    this.checkJwt();
+  }
+
+  checkJwt() {
+    if (this.state.jwt !== undefined && this.state.jwt !== 'undefined') {
+      this.setState({
+        isAuthenticated: true,
+      });
+    }
+  }
+
+  componentDidMount() {
+    this.checkJwt();
   }
 
   render() {
@@ -87,17 +107,17 @@ class App extends React.Component {
       <ThemeProvider theme={theme}>
         <Router>
           <Switch>
-            <PrivateRoute exact path="/">
+            <PrivateRoute exact path="/" isAuthenticated={this.state.isAuthenticated}>
               <Dashboard/>
             </PrivateRoute>
-            <PrivateRoute path="/settings">
+            <PrivateRoute path="/settings" isAuthenticated={this.state.isAuthenticated}>
               <Settings/>
             </PrivateRoute>
-            <NoLogRoute path="/login">
-              <LoginView/>
+            <NoLogRoute path="/login" isAuthenticated={this.state.isAuthenticated}>
+              <LoginView reloadApp={this.reloadApp}/>
             </NoLogRoute>
-            <NoLogRoute path="/register">
-              <RegisterView />
+            <NoLogRoute path="/register" isAuthenticated={this.state.isAuthenticated}>
+              <RegisterView reloadApp={this.reloadApp}/>
             </NoLogRoute>
           </Switch>
         </Router>

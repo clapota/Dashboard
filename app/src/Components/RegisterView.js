@@ -16,11 +16,14 @@ const styles = theme => ({
         display: 'flex',
     },
     card: {
-        backgroundColor: '#25213A',
-        boxShadow: "10px 10px 5px 0px rgba(0,0,0,0.75)",
+        backgroundColor: 'white',
+        minWidth: '30%',
+        boxShadow: "5px 5px 5px 0px rgba(0,0,0,0.75)",
+        maxWidth: '100%',
+        paddingBottom: '15px',
     },
     text: {
-        color: 'white',
+        color: 'black',
     },
     content: {
         flexGrow: 1,
@@ -29,18 +32,50 @@ const styles = theme => ({
         overflowY: 'hidden',
     },
     grid: {
-        paddingTop: '150px',
+        height: '100%',
+        background: 'linear-gradient(to right, #0052d4, #4364f7, #6fb1fc)',
     },
     title: {
-        color: 'white',
+        color: 'black',
+        letterSpacing: '4px',
+        fontWeight: 800,
+    },
+    textField: {
+        maxWidth: '40%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
     link: {
-        paddingY: '5px',
+        color: 'white',
+        fontWeight: 800,
+        letterSpacing: '4px',
+        '&:hover': {
+            color: 'white',
+        },
+        marginBottom: '20px',
+    },
+    linkActive: {
+        color: 'white',
+        fontWeight: 800,
+        letterSpacing: '4px',
+        marginBottom: '20px',
+        borderBottom: 'solid 1px white',
+        '&:hover': {
+            color: 'white',
+        }
+    },
+    button: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+    },
+    linkContainer: {
+        maxWidth: '30%',
+        justifyContent: 'space-evenly',
     }
 })
 
-const apiUrl = 'http://' + (process.env.API_HOST || 'localhost:3000');
-console.log('API : ' + process.env.API_HOST);
+const apiUrl = 'http://' + (process.env.API_HOST || 'localhost:3001');
+
 class RegisterView extends React.Component {
     static propTypes = {
         cookies: instanceOf(Cookies).isRequired
@@ -62,16 +97,23 @@ class RegisterView extends React.Component {
         e.preventDefault();
         if (this.state.password === this.state.repeat && this.state.password.trim().length >= 4 && this.state.username.trim().length >= 4) {
             const User = {username: this.state.username, password: this.state.password};
-            const endpoint = apiUrl + '/login';
+            const endpoint = apiUrl + '/register';
 
             fetch(endpoint, {
                 method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(User),
             })
-            .then(function (response) {
+            .then( (response) => {
                 if (response.ok) {
-                    response.json().then(function(json) {
+                    response.json().then((json) => {
+                        const {cookies} = this.props;
+                        cookies.set('jwt-dashboard', json.token);
                         console.log(json);
+                        this.props.reloadApp();
                     });
                 } else {
                     alert('Unknown network error, please try again later');
@@ -94,96 +136,112 @@ class RegisterView extends React.Component {
         const {classes} = this.props;
         return (
                     <Grid
-                    container
-                    classes={{root: classes.grid}}
-                    direction="column"
-                    justify="flex-end"
-                    alignItems="center"
+                        container
+                        classes={{root: classes.grid}}
+                        direction="column"
+                        justify="center"
+                        alignItems="center"
                     >
-                        <Card classes={{root: classes.card}}>
-                            <div className="paper">
-                                <Avatar className="avatar">
-                                    <LockOutlinedIcon />
-                                </Avatar>
-                                <Typography component="h1" variant="h5" classes={{root: classes.text}}>
-                                    Register
-                                </Typography>
-                                <form className="form" noValidate>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="username"
-                                    label="Username"
-                                    name="username"
-                                    onChange={e => this.handleChange('username', e)}
-                                    autoComplete="username"
-                                    InputLabelProps={{
-                                        style: {color: 'white'}
-                                    }}
-                                    InputProps={{
-                                        style: {color: 'white'}
-                                    }}
-                                    autoFocus
-                                    color="secondary"
-                                />
-                                <TextField
-                                    classes={{root: classes.textfield}}
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    InputLabelProps={{
-                                        style: {color: 'white'}
-                                    }}
-                                    InputProps={{
-                                        style: {color: 'white'}
-                                    }}
-                                    FormHelperTextProps={{
-                                        style: {color: 'white'}
-                                    }}
-                                    color="secondary"
-                                    onChange={e => this.handleChange('password', e)}
-                                    name="password"
-                                    label="Password"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="current-password"
-                                />
-                                <TextField
-                                    classes={{root: classes.textfield}}
-                                    required
-                                    fullWidth
-                                    InputLabelProps={{
-                                        style: {color: 'white'}
-                                    }}
-                                    InputProps={{
-                                        style: {color: 'white'}
-                                    }}
-                                    FormHelperTextProps={{
-                                        style: {color: 'white'}
-                                    }}
-                                    color="secondary"
-                                    onChange={e => this.handleChange('repeat', e)}
-                                    name="repeat"
-                                    label="Repeat"
-                                    type="password"
-                                    id="repeat"
-                                    autoComplete="current-password"
-                                />
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    className="submit"
-                                    onClick={e => this.register(e)}
-                                >
-                                    Register
-                                </Button>
-                                </form>
-                                <Link className="link" to="/login">Login</Link>
-                            </div>
-                        </Card>
+                        <Grid
+                            container
+                            direction="column"
+                            justify="center"
+                            alignItems="center"
+                        >
+                            <Grid
+                                container
+                                alignItems="spaceBetween"
+                                classes={{root: classes.linkContainer}}
+                            >
+                                <Link to="/login" className={classes.link}>Login</Link>
+                                <Link to="/register" className={classes.linkActive}>Register</Link>
+                            </Grid>
+                                <Card classes={{root: classes.card}}>
+                                    <div className="paper">
+                                        <Avatar className="avatar">
+                                            <LockOutlinedIcon />
+                                        </Avatar>
+                                        <Typography component="h1" variant="h5" classes={{root: classes.title}}>
+                                            Register
+                                        </Typography>
+                                        <form className="form" noValidate>
+                                            <Grid
+                                                container
+                                                direction="column"
+                                                justify="center"
+                                                alignItems="space-between"
+                                            >
+                                        <TextField
+                                            classes={{root: classes.textField}}
+                                            margin="normal"
+                                            required
+                                            id="username"
+                                            label="Username"
+                                            name="username"
+                                            onChange={e => this.handleChange('username', e)}
+                                            autoComplete="username"
+                                            InputLabelProps={{
+                                                style: {color: 'black'}
+                                            }}
+                                            InputProps={{
+                                                style: {color: 'black'}
+                                            }}
+                                            autoFocus
+                                            color="secondary"
+                                            variant="outlined"
+                                        />
+                                        <TextField
+                                            variant="outlined"
+                                            classes={{root: classes.textField}}
+                                            margin="normal"
+                                            required
+                                            InputLabelProps={{
+                                                style: {color: 'black'}
+                                            }}
+                                            InputProps={{
+                                                style: {color: 'black'}
+                                            }}
+                                            color="secondary"
+                                            onChange={e => this.handleChange('password', e)}
+                                            name="password"
+                                            label="Password"
+                                            type="password"
+                                            id="password"
+                                            autoComplete="current-password"
+                                        />
+                                        <TextField
+                                            classes={{root: classes.textField}}
+                                            required
+                                            variant="outlined"
+                                            margin="normal"
+                                            InputLabelProps={{
+                                                style: {color: 'black'}
+                                            }}
+                                            InputProps={{
+                                                style: {color: 'black'}
+                                            }}
+                                            color="secondary"
+                                            onChange={e => this.handleChange('repeat', e)}
+                                            name="repeat"
+                                            label="Repeat"
+                                            type="password"
+                                            id="repeat"
+                                            autoComplete="current-password"
+                                        />
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            color="primary"
+                                            classes={{root: classes.button}}
+                                            onClick={e => this.register(e)}
+                                        >
+                                            Register
+                                        </Button>
+                                        </Grid>
+                                        </form>
+                                    </div>
+                                </Card>
+                        </Grid>
                     </Grid>
         );
     }
