@@ -9,6 +9,7 @@ import MoreVert from '@material-ui/icons/MoreVert';
 import './Widget.css';
 import List from '@material-ui/core/List';
 import { withStyles } from '@material-ui/styles';
+import {getComment} from '../../Services/YoutubeService';
 
 const styles = themes => ({
     title: {
@@ -30,26 +31,21 @@ const styles = themes => ({
     }
 })
 
-const commentThreadUrl = 'https://www.googleapis.com/youtube/v3/commentThreads';
-
-const commentsUrl = 'https://www.googleapis.com/youtube/v3/comments'
-
-const apiKey = 'AIzaSyA6OihoMHEMZciRB6KonGj5g_sOfY8boFA';
-
 class YoutubeComment extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            videoLink: props.videoLink,
-            commentList: undefined,
-            maxResult: props.maxResult,
+            videoLink: props.data.link,
+            commentList: props.data.commentList,
+            maxResult: props.data.maxResult,
             open: false,
             loading: false,
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
+        this.updateComment = this.updateComment.bind(this);
     }
 
     handleOpen() {
@@ -63,17 +59,17 @@ class YoutubeComment extends React.Component {
         this.setState({
             ...this.state,
             open: false,
-        })
+        });
+        this.updateComment();
     }
 
     handleChange(name, event) {
-        console.log('jaime le caca');
         if (name === 'maxResult') {
-            let lastChar = event.target.value.charAt(event.target.value.length - 1);
+            const lastChar = event.target.value.charAt(event.target.value.length - 1);
             if (!(lastChar >= '0' && lastChar <= '9')) {
                 event.target.value = event.target.value.substring(0, event.target.value.length - 1);
             }
-            let value = parseInt(event.target.value);
+            const value = parseInt(event.target.value);
 
             if (value < 0) {
                 event.target.value = '0';
@@ -81,79 +77,27 @@ class YoutubeComment extends React.Component {
                 event.target.value = '100';
             }
         }
-        console.log(name);
         this.setState({
             ...this.state,
             [name]: event.target.value,
-        }, () => this.fetchCommentList());
+        });
+        this.props.notifyChange(name, event.target.value, this.props.index);
     }
 
-    fetchComments(data) {
-        let idString = '';
-        if (data.pageInfo.totalResults > 0) {
-            let items = data.items;
-            for (let item of items)
-                idString += item.id + ',';
-        }
-        console.log(idString);
-        const fullUrlComment = commentsUrl + '?id=' + idString + '&key=' + apiKey + '&part=id,snippet';
-
-        fetch(fullUrlComment)
-            .then(response => response.json())
-            .then(data => 
-                    this.setState({
-                        ...this.state,
-                        commentList: data.items,
-                        loading: false,
-                    })
-                )
-            .catch(error => console.log(error));
-    }
-
-    fetchCommentList() {
-        this.setState({
-            loading: true,
-        })
-        console.log('LINK ' + this.state.videoLink);
-        let id = this.youtubeParser(this.state.videoLink);
-
-        console.log(parseInt(this.state.maxResult));
-        if (id !== false && this.state.maxResult !== undefined && !isNaN(parseInt(this.state.maxResult))) {
-            const fullUrlThread = commentThreadUrl + '?videoId=' + id + '&key=' + apiKey + '&part=id&maxResults=' + this.state.maxResult;
-
-            fetch(fullUrlThread)
-                .then(response => response.json())
-                .then(data => 
-                    this.fetchComments(data)
-                );
-        } else {
-            this.setState({
-                ...this.state,
-                commentList: undefined
+    updateComment() {
+        if (this.state.videoLink !== undefined && this.state.maxResult !== undefined &&  !isNaN(this.state.maxResult)) {
+            getComment(this.state.videoLink, this.state.maxResult)
+            .then((response) => {
+                this.setState({commentList: response});
+                this.props.notifyChange('commentList', response, this.props.index);
             })
-            this.setState({
-                loading: false,
-            })
+            .catch((err) => alert(err.message));
         }
-        return 0;
-    }
-
-    youtubeParser(url) {
-        if (url === undefined)
-            return false;
-        var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-        var match = url.match(regExp);
-        return (match&&match[7].length===11)? match[7] : false;
-    }
-
-    componentDidMount() {
-        this.fetchCommentList();
     }
     
     render() {
         let commentList = [];
 
-        console.log('TEST 1 2 3');
         const {classes} = this.props;
         if (this.state.commentList !== undefined) {
             for (let comment of this.state.commentList) {

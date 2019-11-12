@@ -11,9 +11,7 @@ import MoreVert from '@material-ui/icons/MoreVert';
 import './Widget.css';
 import RadialChart from '../RadialBar';
 import { withStyles } from '@material-ui/styles';
-
-const url = 'https://api.openweathermap.org/data/2.5/weather?q=';
-const apiKey = 'f1c2359583253af4b56ab54379447b58';
+import getTemp from '../../Services/WeatherService';
 
 const styles = themes => ({
     title: {
@@ -42,24 +40,10 @@ class MeteoWidget extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.state = {
             open: false,
-            city: this.props.city,
-            unit: 'celsius',
-            temperature: undefined
+            city: this.props.data.city,
+            unit: this.props.data.unit || 'celsius',
+            temperature: this.props.data.temperature,
         };
-    }
-
-    fetchMeteoInfo() {
-        fetch(url + this.state.city + '&APPID=' + apiKey)
-            .then(response => response.json())
-            .then(data =>
-                this.setState({
-                    ...this.state,
-                    temperature: this.state.unit === 'celsius' ? data.main.temp - 273 : (data.main.temp - 273.15) * (9/5) + 32
-                }))
-            .catch(error => this.setState({
-                ...this.state,
-                temperature: undefined
-            }))
     }
 
     handleChange(name, event) {
@@ -67,6 +51,7 @@ class MeteoWidget extends React.Component {
             ...this.state,
             [name]: event.target.value
         });
+        this.props.notifyChange(name, event.target.value, this.props.index);
     }
 
     handleClose() {
@@ -74,7 +59,7 @@ class MeteoWidget extends React.Component {
             ...this.state,
             open: false
         });
-        this.fetchMeteoInfo();
+        this.updateMeteoData();
     }
 
     handleOpen() {
@@ -84,8 +69,15 @@ class MeteoWidget extends React.Component {
         });
     }
 
-    componentDidMount() {
-        this.fetchMeteoInfo();
+    updateMeteoData() {
+        if (this.state.city !== undefined) {
+            getTemp(this.state.city, this.state.unit)
+                .then((data) => {
+                    if (data !== undefined)
+                        this.setState({temperature: data})
+                        this.props.notifyChange('temperature', data, this.props.index);
+                });
+        }
     }
 
     render() {

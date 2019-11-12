@@ -10,23 +10,21 @@ import MoreVert from '@material-ui/icons/MoreVert';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/styles';
 import { LinearProgress } from '@material-ui/core';
-
-const url = 'https://www.googleapis.com/youtube/v3/videos';
-const apiKey = 'AIzaSyA6OihoMHEMZciRB6KonGj5g_sOfY8boFA';
+import { getViews } from '../../Services/YoutubeService';
 
 const styles = themes => ({
     title: {
-        color: 'white',
+        color: 'black',
     },
     header: {
-        backgroundColor: '#3f51b5',
+        backgroundColor: 'white',
     },
     card: {
-        backgroundColor: '#27293d',
+        backgroundColor: 'lightgrey',
     },
     subText: {
         fontSize: '3.5vw',
-        color: 'white',
+        color: 'black',
     }
 })
 
@@ -36,12 +34,10 @@ class YoutubeView extends React.Component {
         this.handleClose = this.handleClose.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
-        this.youtubeParser = this.youtubeParser.bind(this);
-        this.fetchViewsInfo = this.fetchViewsInfo.bind(this);
         this.state = {
-            videoName: undefined,
-            videoUrl: undefined,
-            views: undefined,
+            videoName: props.data.videoName,
+            videoUrl: props.data.videoUrl,
+            views: props.data.views,
             open: false,
             loading: false,
         }
@@ -56,7 +52,7 @@ class YoutubeView extends React.Component {
             ...this.state,
             open: false,
         });
-        this.fetchViewsInfo();
+        this.updateViews();
     }
 
     youtubeParser(url){
@@ -65,6 +61,21 @@ class YoutubeView extends React.Component {
         var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
         var match = url.match(regExp);
         return (match&&match[7].length===11)? match[7] : false;
+    }
+
+    updateViews() {
+        if (this.state.videoUrl) {
+            getViews(this.state.videoUrl)
+            .then((response) => {
+                this.setState({
+                    views: response.views,
+                    videoName: response.videoName,
+                })
+                this.props.notifyChange('videoName', response.videoName, this.props.index);
+                this.props.notifyChange('views', response.views, this.props.index);
+            })
+            .catch((err) => alert(err.message));
+        }
     }
 
     handleOpen() {
@@ -79,30 +90,7 @@ class YoutubeView extends React.Component {
             ...this.state,
             [name]: event.target.value,
         });
-
-    }
-
-    fetchViewsInfo() {
-        if (this.state.videoUrl !== undefined) {
-            this.setState({loading: true});
-            const id = this.youtubeParser(this.state.videoUrl);
-            if (id !== false) {
-                const fullUrl = url + '?key=' + apiKey + '&part=id,statistics,snippet&id=' + id;
-                fetch(fullUrl)
-                    .then(response => response.json())
-                    .then(data => this.setState({
-                        ...this.state,
-                        views: data.pageInfo.totalResults >= 1 ? data.items[0].statistics.viewCount : undefined,
-                        videoName: data.pageInfo.totalResults >= 1 ? data.items[0].snippet.title : undefined
-                    }))
-                    .catch((err) => alert(err.message));
-            }
-            this.setState({loading: false});
-        }
-    }
-
-    componentDidMount() {
-        this.fetchViewsInfo();
+        this.props.notifyChange(name, event.target.value, this.props.index);
     }
 
     render() {

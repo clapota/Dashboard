@@ -9,9 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import MoreVert from '@material-ui/icons/MoreVert';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/styles';
-
-const url = 'https://www.googleapis.com/youtube/v3/channels';
-const apiKey = 'AIzaSyA6OihoMHEMZciRB6KonGj5g_sOfY8boFA';
+import {getSubscribers} from '../../Services/YoutubeService';
 
 const styles = themes => ({
     title: {
@@ -36,8 +34,8 @@ class YoutubeSubscribers extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
         this.state = {
-            username: this.props.username,
-            subscribers: undefined,
+            username: props.data.username,
+            subscribers: props.data.subscribers,
             open: false
         }
     }
@@ -51,7 +49,18 @@ class YoutubeSubscribers extends React.Component {
             ...this.state,
             open: false,
         });
-        this.fetchSubscribersInfo();
+        this.updateSub();
+    }
+
+    updateSub() {
+        if (this.state.username !== undefined) {
+            getSubscribers(this.state.username)
+            .then((response) => {
+                this.setState({subscribers: response});
+                this.props.notifyChange('subscribers', response, this.props.index);
+            })
+            .catch((err) => alert(err.message));
+        }
     }
 
     handleOpen() {
@@ -66,24 +75,7 @@ class YoutubeSubscribers extends React.Component {
             ...this.state,
             [name]: event.target.value,
         });
-
-    }
-
-    fetchSubscribersInfo() {
-        if (this.state.username !== undefined) {
-            const fullUrl = url + '?key=' + apiKey + '&part=id,statistics&forUsername=' + this.state.username
-            fetch(fullUrl)
-                .then(response => response.json())
-                .then(data =>
-                    this.setState({
-                        ...this.state,
-                        subscribers: data.pageInfo.totalResults > 0 ? data.items[0].statistics.subscriberCount : undefined
-            }))
-        }
-    }
-
-    componentDidMount() {
-        this.fetchSubscribersInfo();
+        this.props.notifyChange(name, event.target.value, this.props.index);
     }
 
     render() {
@@ -134,7 +126,7 @@ class YoutubeSubscribers extends React.Component {
                                 autoFocus
                                 defaultValue={this.state.username}
                                 onChange={e => this.handleChange('username', e)}
-                            />  
+                            />
                         </div>
                 </Modal>
             </>

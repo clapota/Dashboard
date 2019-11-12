@@ -12,6 +12,10 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { Container } from '@material-ui/core';
 import DragableItem from './Widgets/DragableGridListTile';
 import DropableZone from './Widgets/DropableZone';
+import MeteoWidget from './Widgets/MeteoWidget';
+import YoutubeComment from './Widgets/YoutubeComment';
+import YoutubeView from './Widgets/YoutubeView';
+import YoutubeSubscribers from './Widgets/YoutubeSubscribers';
 
 const styles = theme => ({
     root: {
@@ -42,6 +46,12 @@ const styles = theme => ({
     }
 })
 
+const widgetList = new Map([
+    ['meteo', 'MeteoWidget'],
+    ['sub', 'YoutubeSubscribers'],
+    ['comment', 'YoutubeComment'],
+    ['view', 'YoutubeView'],
+]);
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -51,6 +61,7 @@ class Dashboard extends React.Component {
         this.addWidget = this.addWidget.bind(this);
         this.triggerEdit = this.triggerEdit.bind(this);
         this.moveWidget = this.moveWidget.bind(this);
+        this.notifyChange = this.notifyChange.bind(this);
     }
 
     moveWidget = (index, monitor, component) => {
@@ -66,11 +77,24 @@ class Dashboard extends React.Component {
 
     addWidget(widget) {
         let widgets = this.state.widgetList;
-        widgets.push(widget);
-        this.setState({
-            ...this.state,
-            widgetList: widgets
-        });
+        console.log(widget);
+        switch(widget) {
+            case 'meteo':
+                widgets.push({widget: widgetList.get(widget), unit: undefined, city: undefined});
+                break;
+            case 'sub':
+                widgets.push({widget: widgetList.get(widget), username: undefined});
+                break;
+            case 'view':
+                widgets.push({widget: widgetList.get(widget), link: undefined});
+                break;
+            case 'comment':
+                widgets.push({widget: widgetList.get(widget), maxResult: undefined, link: undefined});
+                break;
+            default:
+                console.log('oupsi');
+        }
+        this.setState({widgetList: widgets});
     }
 
     triggerEdit(e) {
@@ -79,6 +103,12 @@ class Dashboard extends React.Component {
             ...this.state,
             editMode: !this.state.editMode,
         });
+    }
+
+    notifyChange(name, value, index) {
+        let widgets = this.state.widgetList;
+        widgets[index] = {...widgets[index], [name]: value};
+        this.setState({widgetList: widgets});
     }
 
     componentDidMount() {
@@ -94,19 +124,37 @@ class Dashboard extends React.Component {
         this.setState({width: window.innerWidth, height: window.innerHeight})
     }
 
+    mapWidgetData(data, index) {
+        console.log(data.widget);
+        switch (data.widget) {
+            case 'MeteoWidget':
+                return (<MeteoWidget data={data} notifyChange={this.notifyChange} index={index}/>);
+            case 'YoutubeSubscribers':
+                return (<YoutubeSubscribers data={data} notifyChange={this.notifyChange} index={index}/>);
+            case 'YoutubeComment':
+                return (<YoutubeComment data={data} notifyChange={this.notifyChange} index={index}/>);
+            case 'YoutubeView':
+                return (<YoutubeView data={data} notifyChange={this.notifyChange} index={index}/>);
+        }
+    }
+
     render() {
         const {classes} = this.props;
         let editTrigger = undefined;
         let widgets = [];
 
         if (this.state.editMode === false) {
+            let i = 0;
             for (let widget of this.state.widgetList) {
-                widgets.push(<GridListTile classes={{tile: classes.gridTile}}>{widget}</GridListTile>);
+                let component = this.mapWidgetData(widget, i);
+                widgets.push(<GridListTile classes={{tile: classes.gridTile}}>{component}</GridListTile>);
+                i++;
             }
         } else {
             let i = 0;
             for (let widget of this.state.widgetList) {
-                widgets.push(<GridListTile classes={{tile: classes.gridTile}}><DropableZone index={i}  callback={this.moveWidget}><DragableItem index={i} child={widget} /></DropableZone></GridListTile>);
+                let component = this.mapWidgetData(widget, i);
+                widgets.push(<GridListTile classes={{tile: classes.gridTile}}><DropableZone index={i}  callback={this.moveWidget}><DragableItem index={i} child={component} /></DropableZone></GridListTile>);
                 i++;
             }
         }

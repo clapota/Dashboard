@@ -17,10 +17,10 @@ import YoutubeComment from './YoutubeComment';
 import YoutubeView from './YoutubeView';
 
 const widgetList = new Map([
-    ['meteo', <MeteoWidget/>],
-    ['youtubeSubscribers', <YoutubeSubscribers />],
-    ['youtube Comment', <YoutubeComment />],
-    ['youtube Views', <YoutubeView />],
+    ['meteo', 'meteo'],
+    ['youtube Subscribers', 'sub'],
+    ['youtube Comment', 'comment'],
+    ['youtube Views', 'view'],
 ]);
 
 
@@ -50,17 +50,17 @@ class AddNewWidget extends React.Component {
     }
 
     handleChange(name, e) {
-        let ALED;
+        let widget;
         for (let [key, value] of widgetList) {
             if (key === e.target.value) {
-                ALED = value;
+                widget = value;
             }
         }
         this.setState({
             ...this.state,
             name: e.target.value,
         }, () => {
-            this.setState({widget:ALED});
+            this.setState({widget:widget});
         });
     }
 
