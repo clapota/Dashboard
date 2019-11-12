@@ -26,6 +26,13 @@ let userSchema = mongoose.Schema({
 			required: true,
 		},
 		config: { type: Object },
+	}],
+	services: [{
+		_id: false,
+		name: {
+			type: String,
+			required: true,
+		}
 	}]
 });
 
