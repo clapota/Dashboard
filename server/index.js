@@ -94,6 +94,24 @@ app.get('/widgets', auth, async (req, res) => {
 	}
 });
 
+app.get("/services", auth, async (req, res) => {
+	try {
+		res.json(req.user.services);
+	} catch (error) {
+		res.status(400).send({error: error.toString()});
+	}
+});
+
+app.post("/services", auth, async (req, res) => {
+	try {
+		req.user.services = req.body;
+		await req.user.save();
+		res.send();
+	} catch (error) {
+		res.status(400).send({error: error.toString()});
+	}
+});
+
 app.listen(serverPort, () => {
 	console.log("Server starting on port: " + serverPort);
 });
