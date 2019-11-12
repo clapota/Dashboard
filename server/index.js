@@ -2,14 +2,19 @@ const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 const auth = require('./middleware/auth');
+const CORS = require('cors');
+const bodyParser = require('body-parser');
 
 // ENV
-const serverPort = parseInt(process.env.PORT) || 3000;
-const dbUrl = `mongodb://${process.env.DB_HOST}/`;
+const serverPort = parseInt(process.env.PORT) || 3001;
+const dbHost = process.env.DB_HOST || 'localhost:27017';
+const dbUrl = `mongodb://${dbHost}/test`;
 
 const app = express();
 
 app.use(express.json());
+app.use(CORS());
+app.use(bodyParser.json());
 
 mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
 
@@ -36,12 +41,14 @@ app.post('/login', async (req, res) => {
 
 app.post('/register', async (req, res) => {
 	try {
+		console.log(req.body);
 		const user = new User(req.body);
 		await user.save();
 		const token = await user.generateAuthToken();
 		delete user.tokens;
 		res.status(200).send({ user, token });
 	} catch (error) {
+		console.log(error);
 		res.status(400).send({error: error.toString()});
 	}
 });

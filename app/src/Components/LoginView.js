@@ -16,11 +16,14 @@ const styles = theme => ({
         display: 'flex',
     },
     card: {
-        backgroundColor: '#25213A',
-        boxShadow: "10px 10px 5px 0px rgba(0,0,0,0.75)",
+        backgroundColor: 'white',
+        minWidth: '30%',
+        boxShadow: "5px 5px 5px 0px rgba(0,0,0,0.75)",
+        maxWidth: '100%',
+        paddingBottom: '15px',
     },
     text: {
-        color: 'white',
+        color: 'black',
     },
     content: {
         flexGrow: 1,
@@ -29,16 +32,49 @@ const styles = theme => ({
         overflowY: 'hidden',
     },
     grid: {
-        paddingTop: '150px',
+        height: '100%',
+        background: 'linear-gradient(to right, #0052d4, #4364f7, #6fb1fc)',
     },
     title: {
-        color: 'white',
+        color: 'black',
+        letterSpacing: '4px',
+        fontWeight: 800,
+    },
+    textField: {
+        maxWidth: '40%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
     link: {
-        paddingY: '5px',
+        color: 'white',
+        fontWeight: 800,
+        letterSpacing: '4px',
+        '&:hover': {
+            color: 'white',
+        },
+        marginBottom: '20px',
+    },
+    linkActive: {
+        color: 'white',
+        fontWeight: 800,
+        letterSpacing: '4px',
+        marginBottom: '20px',
+        borderBottom: 'solid 1px white',
+        '&:hover': {
+            color: 'white',
+        }
+    },
+    button: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+    },
+    linkContainer: {
+        maxWidth: '30%',
+        justifyContent: 'space-evenly',
     }
 })
 
+const apiUrl = 'http://' + (process.env.API_HOST || 'localhost:3001');
 
 class LoginView extends React.Component {
     static propTypes = {
@@ -65,59 +101,96 @@ class LoginView extends React.Component {
 
     login(e) {
         e.preventDefault();
-        alert('not implemented');
+        const User = {username: this.state.username, password: this.state.password};
+        const endpoint = apiUrl + '/login';
+
+        fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(User),
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            const {cookies} = this.props;
+            cookies.set('jwt-dashboard', json.token);
+            this.props.reloadApp();
+        })
+        .catch((error) => alert(error.message));
+
     }
 
     render() {
         const {classes} = this.props;
+        
         return (
-                    <Grid
+            <Grid
+                container
+                classes={{root: classes.grid}}
+                direction="column"
+                justify="center"
+                alignItems="center"
+            >
+                <Grid
                     container
-                    classes={{root: classes.grid}}
                     direction="column"
-                    justify="flex-end"
+                    justify="center"
                     alignItems="center"
+                >
+                    <Grid
+                        container
+                        alignItems="spaceBetween"
+                        classes={{root: classes.linkContainer}}
                     >
+                        <Link to="/login" className={classes.linkActive}>Login</Link>
+                        <Link to="/register" className={classes.link}>Register</Link>
+                    </Grid>
                         <Card classes={{root: classes.card}}>
                             <div className="paper">
                                 <Avatar className="avatar">
                                     <LockOutlinedIcon />
                                 </Avatar>
-                                <Typography component="h1" variant="h5" classes={{root: classes.text}}>
+                                <Typography component="h1" variant="h5" classes={{root: classes.title}}>
                                     Sign in
                                 </Typography>
                                 <form className="form" noValidate>
+                                    <Grid
+                                        container
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="space-between"
+                                    >
                                 <TextField
+                                    classes={{root: classes.textField}}
                                     margin="normal"
                                     required
-                                    fullWidth
                                     id="username"
                                     label="Username"
                                     name="username"
                                     onChange={e => this.handleChange('username', e)}
                                     autoComplete="username"
                                     InputLabelProps={{
-                                        style: {color: 'white'}
+                                        style: {color: 'black'}
                                     }}
                                     InputProps={{
-                                        style: {color: 'white'}
+                                        style: {color: 'black'}
                                     }}
                                     autoFocus
                                     color="secondary"
+                                    variant="outlined"
                                 />
                                 <TextField
-                                    classes={{root: classes.textfield}}
+                                    variant="outlined"
+                                    classes={{root: classes.textField}}
                                     margin="normal"
                                     required
-                                    fullWidth
                                     InputLabelProps={{
-                                        style: {color: 'white'}
+                                        style: {color: 'black'}
                                     }}
                                     InputProps={{
-                                        style: {color: 'white'}
-                                    }}
-                                    FormHelperTextProps={{
-                                        style: {color: 'white'}
+                                        style: {color: 'black'}
                                     }}
                                     color="secondary"
                                     onChange={e => this.handleChange('password', e)}
@@ -129,21 +202,21 @@ class LoginView extends React.Component {
                                 />
                                 <Button
                                     type="submit"
-                                    fullWidth
                                     variant="contained"
                                     color="primary"
-                                    className="submit"
+                                    classes={{root: classes.button}}
                                     onClick={e => this.login(e)}
                                 >
-                                    Sign In
+                                    Register
                                 </Button>
+                                </Grid>
                                 </form>
-                                <Link className="link" to="/register">Register now</Link>
                             </div>
                         </Card>
-                    </Grid>
+                </Grid>
+            </Grid>
         );
-    }
+}
 }
 
 export default withCookies(withStyles(styles)(LoginView));
