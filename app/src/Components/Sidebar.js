@@ -102,6 +102,22 @@ function ResponsiveDrawer(props) {
       </List>
     </div>
   );
+  let button = undefined;
+
+  if (props.onEdit !== undefined) {
+    button = (
+      <IconButton
+        color="inherit"
+        aria-label="modify dashboard"
+        edge="end"
+        onClick={e => props.onEdit(e)}
+        className={classes.addButton}
+      >
+        <EditIcon />
+      </IconButton>
+    );
+  }
+
 
   return (
     <>
@@ -119,15 +135,7 @@ function ResponsiveDrawer(props) {
         <Typography variant="h6" noWrap classes={{root: classes.title}}>
             DASHBOARD
         </Typography>
-        <IconButton
-          color="inherit"
-          aria-label="modify dashboard"
-          edge="end"
-          onClick={e => props.onEdit(e)}
-          className={classes.addButton}
-        >
-          <EditIcon />
-        </IconButton>
+        {button}
         </Toolbar>
     </AppBar>
     <nav className={classes.drawer} aria-label="mailbox folders">

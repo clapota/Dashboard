@@ -16,6 +16,8 @@ import MeteoWidget from './Widgets/MeteoWidget';
 import YoutubeComment from './Widgets/YoutubeComment';
 import YoutubeView from './Widgets/YoutubeView';
 import YoutubeSubscribers from './Widgets/YoutubeSubscribers';
+import TwitchStreamer from './Widgets/TwitchStreamer';
+import {isStreaming} from '../Services/TwitchService';
 
 const styles = theme => ({
     root: {
@@ -51,6 +53,7 @@ const widgetList = new Map([
     ['sub', 'YoutubeSubscribers'],
     ['comment', 'YoutubeComment'],
     ['view', 'YoutubeView'],
+    ['stream', 'TwitchStreamer']
 ]);
 
 class Dashboard extends React.Component {
@@ -90,6 +93,9 @@ class Dashboard extends React.Component {
                 break;
             case 'comment':
                 widgets.push({widget: widgetList.get(widget), maxResult: undefined, link: undefined});
+                break;
+            case 'stream':
+                widgets.push({widget: widgetList.get(widget), username: undefined, viewers: undefined, thumbnail_url: undefined, title: undefined});
                 break;
             default:
                 console.log('oupsi');
@@ -135,6 +141,8 @@ class Dashboard extends React.Component {
                 return (<YoutubeComment data={data} notifyChange={this.notifyChange} index={index}/>);
             case 'YoutubeView':
                 return (<YoutubeView data={data} notifyChange={this.notifyChange} index={index}/>);
+            case 'TwitchStreamer':
+                return (<TwitchStreamer data={data} notifyChange={this.notifyChange} index={index} />);
         }
     }
 

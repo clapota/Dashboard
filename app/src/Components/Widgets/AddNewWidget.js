@@ -21,6 +21,7 @@ const widgetList = new Map([
     ['youtube Subscribers', 'sub'],
     ['youtube Comment', 'comment'],
     ['youtube Views', 'view'],
+    ['twitch stream', 'stream']
 ]);
 
 

@@ -19,7 +19,7 @@ class Settings extends React.Component {
         const {classes} = this.props;
         return (
             <div className={classes.root}>
-                <ResponsiveDrawer/>
+                <ResponsiveDrawer onEdit={undefined}/>
                 <div className={classes.content}>
                     
                 </div>

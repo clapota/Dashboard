@@ -7,10 +7,12 @@ import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import MoreVert from '@material-ui/icons/MoreVert';
-import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/styles';
-import {getSubscribers} from '../../Services/YoutubeService';
 import { Divider } from '@material-ui/core';
+import { isStreaming } from '../../Services/TwitchService';
+import Container from '@material-ui/core/Container';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const styles = themes => ({
     title: {
@@ -25,19 +27,27 @@ const styles = themes => ({
     subText: {
         fontSize: '3.5vw',
         color: 'black',
+    },
+    streamTitle: {
+        fontWeight: 800,
+        color: 'black',
+        maxWidth: '70%',
     }
 })
 
-class YoutubeSubscribers extends React.Component {
+class TwitchStreamer extends React.Component {
     constructor(props) {
         super(props);
         this.handleClose = this.handleClose.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
+        this.updateStream = this.updateStream.bind(this);
         this.state = {
             username: props.data.username,
-            subscribers: props.data.subscribers,
-            open: false
+            viewers: props.data.viewers,
+            thumbnail_url: props.data.thumbnail_url,
+            title: props.data.title,
+            open: false,
         }
     }
 
@@ -50,19 +60,31 @@ class YoutubeSubscribers extends React.Component {
             ...this.state,
             open: false,
         });
-        this.updateSub();
+        this.updateStream();
     }
 
-    updateSub() {
+    updateStream() {
         if (this.state.username !== undefined) {
-            getSubscribers(this.state.username)
+            isStreaming(this.state.username)
             .then((response) => {
-                this.setState({subscribers: response});
-                this.props.notifyChange('subscribers', response, this.props.index);
+                this.setState({
+                    viewers: response.viewers,
+                    title: response.title,
+                    thumbnail: response.thumbnail,
+                });
+                this.props.notifyChange('viewers', response.viewers, this.props.index);
+                this.props.notifyChange('title', response.title, this.props.index);
+                this.props.notifyChange('thumbnail', response.thumbnail, this.props.index);
             })
-            .catch((err) => {
-                this.setState({subscribers: undefined});
-                this.props.notifyChange('subscribers', undefined, this.props.index);
+            .catch((error) => {
+                this.setState({
+                    viewers: undefined,
+                    title: undefined,
+                    thumbnail: undefined,
+                })
+                this.props.notifyChange('viewers', undefined, this.props.index);
+                this.props.notifyChange('title', undefined, this.props.index);
+                this.props.notifyChange('thumbnail', undefined, this.props.index);                
             });
         }
     }
@@ -84,6 +106,7 @@ class YoutubeSubscribers extends React.Component {
 
     render() {
         const {classes} = this.props;
+        console.log(this.state.thumbnail);
         return (
             <>
                 <Card classes={{root: classes.card}}>
@@ -92,7 +115,7 @@ class YoutubeSubscribers extends React.Component {
                             title: classes.title,
                             root: classes.header,
                         }}
-                        title="Youtube subscribers widget"
+                        title="Twitch streamer widget"
                         action={
                             <IconButton onClick={this.handleOpen}>
                                 <MoreVert />
@@ -101,14 +124,21 @@ class YoutubeSubscribers extends React.Component {
                     />
                     <Divider />
                     <CardContent>
-                        {this.state.subscribers === undefined ? this.state.username === undefined ? 
+                        {this.state.viewers === undefined ? this.state.username === undefined ? 
                         <Typography classes={{root: classes.title}}>Please select an username</Typography>
                         : 
                         <Typography classes={{root: classes.title}}>{this.state.username} : Invalid username</Typography> 
                         : 
-                        <Container>
-                        <Typography classes={{root: classes.title}}>Total subcribers :</Typography><Typography classes={{root: classes.subText}}>{this.numberWithCommas(this.state.subscribers)}</Typography><Typography classes={{root: classes.title}}>{this.state.username}</Typography>
-                        </Container>
+                        <Grid container direction="column">
+                            <img src={this.state.thumbnail} />
+                            <Grid container direction="row" justify="space-between">
+                                <Typography classes={{root: classes.streamTitle}}>{this.state.title}</Typography>
+                                <div>
+                                    <VisibilityIcon />
+                                    <Typography classes={{root: classes.title}}>{this.state.viewers}</Typography>
+                                </div>
+                            </Grid>
+                        </Grid>
                     }
                     </CardContent>
                 </Card>
@@ -117,7 +147,7 @@ class YoutubeSubscribers extends React.Component {
                     onClose={this.handleClose}>
                         <div className="modal-dashboard">
                             <Typography variant="h4">
-                                Youtube subscribers settings
+                                Twitch streamer settings
                             </Typography>
                             <TextField
                                 variant="outlined"
@@ -139,4 +169,4 @@ class YoutubeSubscribers extends React.Component {
     }
 }
 
-export default withStyles(styles)(YoutubeSubscribers);
+export default withStyles(styles)(TwitchStreamer);

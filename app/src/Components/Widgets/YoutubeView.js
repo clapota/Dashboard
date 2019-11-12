@@ -74,7 +74,14 @@ class YoutubeView extends React.Component {
                 this.props.notifyChange('videoName', response.videoName, this.props.index);
                 this.props.notifyChange('views', response.views, this.props.index);
             })
-            .catch((err) => alert(err.message));
+            .catch((err) => {
+                this.setState({
+                    views: undefined,
+                    videoName: undefined,
+                });
+                this.props.notifyChange('videoName', undefined, this.props.index);
+                this.props.notifyChange('views', undefined, this.props.index);
+            });
         }
     }
 

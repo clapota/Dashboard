@@ -19,15 +19,12 @@ const styles = themes => ({
         backgroundColor: 'white',
     },
     card: {
-        backgroundColor: 'lightgrey',
+        backgroundColor: 'white',
         maxHeight: 400,
         overflow: 'auto',
     },
     list: {
         overflow: 'auto',
-    },
-    divider: {
-        backgroundColor: 'white',
     }
 })
 
@@ -91,7 +88,10 @@ class YoutubeComment extends React.Component {
                 this.setState({commentList: response});
                 this.props.notifyChange('commentList', response, this.props.index);
             })
-            .catch((err) => alert(err.message));
+            .catch((err) => {
+                this.setState({commentList: undefined});
+                this.props.notifyChange('commentList', undefined, this.props.index);
+            });
         }
     }
     
@@ -109,7 +109,7 @@ class YoutubeComment extends React.Component {
                             <Typography variant="p" classes={{root: classes.title}}>{comment.snippet.textOriginal}</Typography>
                         </Container>
                     </ListItem>
-                    <Divider classes={{root: classes.divider}}/>
+                    <Divider />
                     </>
                 )
             }
@@ -129,6 +129,7 @@ class YoutubeComment extends React.Component {
                             </IconButton>
                         }
                     />
+                    <Divider />
                     <CardContent classes={{root: classes.content}}>{this.state.loading === true ? (<LinearProgress />) : commentList.length !== 0 ? <List classes={{root: classes.list}}>{commentList}</List> : this.state.videoLink === undefined ? (<Typography classes={{root: classes.title}}>Please provide a youtube video Url</Typography>) : (<Typography>Invalid url : {this.state.videoLink}</Typography>) }</CardContent>
                 </Card>
                 <Modal

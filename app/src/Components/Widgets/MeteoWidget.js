@@ -7,6 +7,7 @@ import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 import MoreVert from '@material-ui/icons/MoreVert';
 import './Widget.css';
 import RadialChart from '../RadialBar';
@@ -28,7 +29,7 @@ const styles = themes => ({
         color: 'white',
     },
     card: {
-        backgroundColor: 'lightgrey',
+        backgroundColor: 'white',
     }
 });
 
@@ -76,6 +77,10 @@ class MeteoWidget extends React.Component {
                     if (data !== undefined)
                         this.setState({temperature: data})
                         this.props.notifyChange('temperature', data, this.props.index);
+                })
+                .catch((error) => {
+                    this.setState({temperature: undefined});
+                    this.props.notifyChange('temperature', undefined, this.props.index);
                 });
         }
     }
@@ -101,6 +106,7 @@ class MeteoWidget extends React.Component {
                         </IconButton>
                     }
                 />
+                <Divider/>
                 <CardContent>
                     {this.state.temperature === undefined ? this.state.city === undefined ? <Typography classes={{root: classes.text}}>Please select a city</Typography> : <Typography classes={{root: classes.text}}> {this.state.city} : Invalid city </Typography> : <RadialChart unit={this.state.unit} degree={this.state.temperature} city={this.state.city} />}
                 </CardContent>
