@@ -7,11 +7,9 @@ function getTemp(city, unit = 'celsius') {
     fetch(url + city + '&APPID=' + apiKey)
     .then(response => response.json())
     .then(data => {
-        console.log(data);
-        if (data.cod == 404)
+        if (data.cod === 404)
             reject(new Error('Invalid city name'));
         if (unit === 'celsius') {
-            console.log('zizi de meteo');
             resolve(data.main.temp - 273);
         } else {
             resolve((data.main.temp - 273.15) * (9/5) + 32);

@@ -11,7 +11,6 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/styles';
 import { Divider } from '@material-ui/core';
 import { isStreaming } from '../../Services/TwitchService';
-import Container from '@material-ui/core/Container';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const styles = themes => ({
@@ -45,7 +44,7 @@ class TwitchStreamer extends React.Component {
         this.state = {
             username: props.data.username,
             viewers: props.data.viewers,
-            thumbnail_url: props.data.thumbnail_url,
+            thumbnail: props.data.thumbnail,
             title: props.data.title,
             open: false,
         }
@@ -106,7 +105,6 @@ class TwitchStreamer extends React.Component {
 
     render() {
         const {classes} = this.props;
-        console.log(this.state.thumbnail);
         return (
             <>
                 <Card classes={{root: classes.card}}>
@@ -130,7 +128,7 @@ class TwitchStreamer extends React.Component {
                         <Typography classes={{root: classes.title}}>{this.state.username} : Invalid username</Typography> 
                         : 
                         <Grid container direction="column">
-                            <img src={this.state.thumbnail} />
+                            <img src={this.state.thumbnail} alt="Stream thumbnail" />
                             <Grid container direction="row" justify="space-between">
                                 <Typography classes={{root: classes.streamTitle}}>{this.state.title}</Typography>
                                 <div>

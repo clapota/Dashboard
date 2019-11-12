@@ -112,7 +112,6 @@ class RegisterView extends React.Component {
                     response.json().then((json) => {
                         const {cookies} = this.props;
                         cookies.set('jwt-dashboard', json.token);
-                        console.log(json);
                         this.props.reloadApp();
                     });
                 } else {

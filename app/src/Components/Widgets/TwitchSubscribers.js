@@ -9,8 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import MoreVert from '@material-ui/icons/MoreVert';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/styles';
-import { LinearProgress, Divider } from '@material-ui/core';
-import { getViews } from '../../Services/YoutubeService';
+import {getSubscribers} from '../../Services/TwitchService';
+import { Divider } from '@material-ui/core';
 
 const styles = themes => ({
     title: {
@@ -28,18 +28,16 @@ const styles = themes => ({
     }
 })
 
-class YoutubeView extends React.Component {
+class TwitchSubscribers extends React.Component {
     constructor(props) {
         super(props);
         this.handleClose = this.handleClose.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
         this.state = {
-            videoName: props.data.videoName,
-            videoUrl: props.data.videoUrl,
-            views: props.data.views,
-            open: false,
-            loading: false,
+            username: props.data.username,
+            subscribers: props.data.subscribers,
+            open: false
         }
     }
 
@@ -52,35 +50,19 @@ class YoutubeView extends React.Component {
             ...this.state,
             open: false,
         });
-        this.updateViews();
+        this.updateSub();
     }
 
-    youtubeParser(url){
-        if (url === undefined)
-            return false;
-        var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-        var match = url.match(regExp);
-        return (match&&match[7].length===11)? match[7] : false;
-    }
-
-    updateViews() {
-        if (this.state.videoUrl) {
-            getViews(this.state.videoUrl)
+    updateSub() {
+        if (this.state.username !== undefined) {
+            getSubscribers(this.state.username)
             .then((response) => {
-                this.setState({
-                    views: response.views,
-                    videoName: response.videoName,
-                })
-                this.props.notifyChange('videoName', response.videoName, this.props.index);
-                this.props.notifyChange('views', response.views, this.props.index);
+                this.setState({subscribers: response});
+                this.props.notifyChange('subscribers', response, this.props.index);
             })
             .catch((err) => {
-                this.setState({
-                    views: undefined,
-                    videoName: undefined,
-                });
-                this.props.notifyChange('videoName', undefined, this.props.index);
-                this.props.notifyChange('views', undefined, this.props.index);
+                this.setState({subscribers: undefined});
+                this.props.notifyChange('subscribers', undefined, this.props.index);
             });
         }
     }
@@ -110,7 +92,7 @@ class YoutubeView extends React.Component {
                             title: classes.title,
                             root: classes.header,
                         }}
-                        title="Youtube views widget"
+                        title="Twitch subscribers widget"
                         action={
                             <IconButton onClick={this.handleOpen}>
                                 <MoreVert />
@@ -119,19 +101,13 @@ class YoutubeView extends React.Component {
                     />
                     <Divider />
                     <CardContent>
-                        {this.state.views === undefined ? this.state.videoUrl === undefined ? 
-                        <Typography classes={{root: classes.title}}>Please enter a youtube video url</Typography>
-                        :
-                        <Typography classes={{root: classes.title}}>{this.state.videoUrl} : Invalid url</Typography> 
+                        {this.state.subscribers === undefined ? this.state.username === undefined ? 
+                        <Typography classes={{root: classes.title}}>Please select an username</Typography>
                         : 
-                        this.state.loading ? 
+                        <Typography classes={{root: classes.title}}>{this.state.username} : Invalid username</Typography> 
+                        : 
                         <Container>
-                            <Typography>BITE</Typography>
-                            <LinearProgress />
-                        </Container>
-                        :
-                        <Container>
-                            <Typography classes={{root: classes.title}}>Total views :</Typography><Typography classes={{root: classes.subText}}>{this.numberWithCommas(this.state.views)}</Typography><Typography classes={{root: classes.title}}>{this.state.videoName}</Typography>
+                        <Typography classes={{root: classes.title}}>Total subcribers :</Typography><Typography classes={{root: classes.subText}}>{this.numberWithCommas(this.state.subscribers)}</Typography><Typography classes={{root: classes.title}}>{this.state.username}</Typography>
                         </Container>
                     }
                     </CardContent>
@@ -141,20 +117,20 @@ class YoutubeView extends React.Component {
                     onClose={this.handleClose}>
                         <div className="modal-dashboard">
                             <Typography variant="h4">
-                                Youtube views settings
+                                Twitch subscribers settings
                             </Typography>
                             <TextField
                                 variant="outlined"
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="videoUrl"
-                                label="Video URL"
-                                name="videoUrl"
-                                autoComplete="videoUrl"
+                                id="username"
+                                label="Username"
+                                name="username"
+                                autoComplete="username"
                                 autoFocus
-                                defaultValue={this.state.videoUrl}
-                                onChange={e => this.handleChange('videoUrl', e)}
+                                defaultValue={this.state.username}
+                                onChange={e => this.handleChange('username', e)}
                             />
                         </div>
                 </Modal>
@@ -163,4 +139,4 @@ class YoutubeView extends React.Component {
     }
 }
 
-export default withStyles(styles)(YoutubeView);
+export default withStyles(styles)(TwitchSubscribers);

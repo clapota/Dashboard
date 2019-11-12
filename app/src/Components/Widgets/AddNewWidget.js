@@ -1,5 +1,4 @@
 import React from 'react';
-import MeteoWidget from './MeteoWidget';
 import Card from '@material-ui/core/Card';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import CardContent from '@material-ui/core/CardContent';
@@ -12,16 +11,14 @@ import './Widget.css';
 import Typography from '@material-ui/core/Typography';
 import Select from '@material-ui/core/Select';
 import { Button } from '@material-ui/core';
-import YoutubeSubscribers from './YoutubeSubscribers';
-import YoutubeComment from './YoutubeComment';
-import YoutubeView from './YoutubeView';
 
 const widgetList = new Map([
     ['meteo', 'meteo'],
     ['youtube Subscribers', 'sub'],
     ['youtube Comment', 'comment'],
     ['youtube Views', 'view'],
-    ['twitch stream', 'stream']
+    ['twitch stream', 'stream'],
+    ['twitch subscribers', 'subtwitch']
 ]);
 
 

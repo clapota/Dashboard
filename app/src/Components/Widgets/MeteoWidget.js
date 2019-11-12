@@ -17,7 +17,6 @@ import getTemp from '../../Services/WeatherService';
 const styles = themes => ({
     title: {
         color: 'black',
-        fontWeight: 800
     },
     text: {
         color: 'black',

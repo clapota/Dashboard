@@ -85,7 +85,6 @@ class App extends React.Component {
 
   reloadApp() {
     const {cookies} = this.props;
-    console.log('toto');
     this.setState({...this.state, jwt: cookies.get('jwt-dashboard')});
     this.checkJwt();
   }

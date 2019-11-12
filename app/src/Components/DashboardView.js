@@ -17,7 +17,7 @@ import YoutubeComment from './Widgets/YoutubeComment';
 import YoutubeView from './Widgets/YoutubeView';
 import YoutubeSubscribers from './Widgets/YoutubeSubscribers';
 import TwitchStreamer from './Widgets/TwitchStreamer';
-import {isStreaming} from '../Services/TwitchService';
+import TwitchSubscribers from './Widgets/TwitchSubscribers';
 
 const styles = theme => ({
     root: {
@@ -53,7 +53,8 @@ const widgetList = new Map([
     ['sub', 'YoutubeSubscribers'],
     ['comment', 'YoutubeComment'],
     ['view', 'YoutubeView'],
-    ['stream', 'TwitchStreamer']
+    ['stream', 'TwitchStreamer'],
+    ['subtwitch', 'TwitchSubscribers'],
 ]);
 
 class Dashboard extends React.Component {
@@ -80,7 +81,6 @@ class Dashboard extends React.Component {
 
     addWidget(widget) {
         let widgets = this.state.widgetList;
-        console.log(widget);
         switch(widget) {
             case 'meteo':
                 widgets.push({widget: widgetList.get(widget), unit: undefined, city: undefined});
@@ -97,8 +97,11 @@ class Dashboard extends React.Component {
             case 'stream':
                 widgets.push({widget: widgetList.get(widget), username: undefined, viewers: undefined, thumbnail_url: undefined, title: undefined});
                 break;
+            case 'subtwitch':
+                widgets.push({widget: widgetList.get(widget), username: undefined});
+                break;
             default:
-                console.log('oupsi');
+                break;
         }
         this.setState({widgetList: widgets});
     }
@@ -131,7 +134,6 @@ class Dashboard extends React.Component {
     }
 
     mapWidgetData(data, index) {
-        console.log(data.widget);
         switch (data.widget) {
             case 'MeteoWidget':
                 return (<MeteoWidget data={data} notifyChange={this.notifyChange} index={index}/>);
@@ -143,6 +145,10 @@ class Dashboard extends React.Component {
                 return (<YoutubeView data={data} notifyChange={this.notifyChange} index={index}/>);
             case 'TwitchStreamer':
                 return (<TwitchStreamer data={data} notifyChange={this.notifyChange} index={index} />);
+            case 'TwitchSubscribers':
+                return (<TwitchSubscribers data={data} notifyChange={this.notifyChange} index={index} />);
+            default:
+                return undefined;
         }
     }
 

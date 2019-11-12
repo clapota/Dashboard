@@ -65,11 +65,9 @@ function getViews(videoLink) {
         fetch(fullUrl)
         .then(response => response.json())
         .then(data =>  {
-            console.log('JAIME LES NOIR ');
             if (data.pageInfo.totalResults < 1) {
                 reject(new Error('no data'));
             }
-            console.log('le zizi c\'est fantastique');
             resolve({views: data.items[0].statistics.viewCount,
                     videoName: data.items[0].snippet.title});
             }
