@@ -19,6 +19,7 @@
     "perfect-scrollbar": "^1.4.0",
     "react": "^16.11.0",
     "react-apexcharts": "^1.3.3",
+    "react-autobind": "^1.0.6",
     "react-cookie": "^4.0.1",
     "react-dnd": "^9.4.0",
     "react-dnd-html5-backend": "^9.4.0",

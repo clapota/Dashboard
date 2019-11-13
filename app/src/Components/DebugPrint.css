@@ -1,0 +1,5 @@
+.root { backgroundColor: '#1f4662'; color: '#fff'; fontSize: '12px'; }
+
+.header { backgroundColor: '#193549'; padding: '5px 10px'; fontFamily: 'monospace'; color: '#ffc600'; }
+
+.pre { display: 'block'; padding: '10px 30px'; margin: '0'; overflow: 'scroll'; }

@@ -15,6 +15,7 @@ import {
 import Settings from './Components/SettingsView';
 import RegisterView from './Components/RegisterView';
 import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
+import AboutJson from './Components/AboutJson';
 
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme)
@@ -70,9 +71,11 @@ class App extends React.Component {
     this.reloadCookies = this.reloadCookies.bind(this);
     this.reloadApp = this.reloadApp.bind(this);
     this.checkJwt = this.checkJwt.bind(this);
+    this.getIp = this.getIp.bind(this);
     this.state = {
       jwt:  cookies.get('jwt-dashboard'),
       isAuthenticated: false,
+      ip: undefined,
     }
   }
 
@@ -97,11 +100,28 @@ class App extends React.Component {
     }
   }
 
+  getIp() {
+    fetch('https://api.ipify.org/?format=jsonp&callback=?')
+    .then((response) => response.text())
+    .then((data) => {
+      console.log(data);
+      data = data.replace('?', '').replace('(', '').replace(')', '').replace(';', '');
+      const json = JSON.parse(data);
+      this.setState({
+        ip: json.ip,
+      });
+      console.log(json);
+    })
+    .catch((err) => console.log(err));
+  }
+
   componentDidMount() {
     this.checkJwt();
+    this.getIp();
   }
 
   render() {
+    console.log('IP : ' + this.state.ip);
     return (
       <ThemeProvider theme={theme}>
         <Router>
@@ -118,6 +138,9 @@ class App extends React.Component {
             <NoLogRoute path="/register" isAuthenticated={this.state.isAuthenticated}>
               <RegisterView reloadApp={this.reloadApp}/>
             </NoLogRoute>
+            <Route path="/about.json" >
+              <AboutJson ip={this.state.ip}/>
+            </Route>
           </Switch>
         </Router>
       </ThemeProvider>
