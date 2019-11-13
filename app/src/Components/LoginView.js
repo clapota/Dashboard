@@ -74,7 +74,7 @@ const styles = theme => ({
     }
 })
 
-const apiUrl = 'http://' + (process.env.REACT_APP_API_HOST || 'localhost:3001');
+const apiUrl = 'http://localhost:3000';
 
 class LoginView extends React.Component {
     static propTypes = {

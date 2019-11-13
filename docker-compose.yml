@@ -1,6 +1,6 @@
 version: '3'
 services:
-  server: # app
+  server:
     container_name: 'dashboard_app'
     build: ./app
     ports:
