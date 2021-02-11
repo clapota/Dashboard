@@ -12,7 +12,7 @@
     "@material-ui/icons": "^4.5.1",
     "@material-ui/system": "^4.5.2",
     "@trendmicro/react-sidenav": "^0.4.5",
-    "apexcharts": "^3.10.1",
+    "apexcharts": "^3.24.0",
     "bootstrap": "^4.3.1",
     "favicon": "0.0.2",
     "fontawesome": "^5.6.3",
